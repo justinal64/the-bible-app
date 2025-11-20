@@ -6,7 +6,7 @@ Get the Bible app running in minutes!
 
 - Node.js 18+ installed
 - npm or yarn
-- Supabase account (for database features)
+- Supabase account (optional - app works without it)
 
 ## Installation
 
@@ -15,20 +15,18 @@ Get the Bible app running in minutes!
    npm install
    ```
 
-2. **Configure environment** (already set up)
-   - `.env` file contains Supabase credentials
-   - Update with your own Supabase project URL and keys if needed
-
-3. **Start development server**
+2. **Start development server**
    ```bash
    npm run dev
    ```
 
-4. **Access the app**
+3. **Access the app**
    - Press `w` to open in web browser
    - Scan QR code with Expo Go app for mobile
    - Press `i` for iOS simulator
    - Press `a` for Android emulator
+
+**Note**: The app works immediately with mock data. Supabase setup is optional for full database features.
 
 ## Features You Can Try Immediately
 

@@ -245,7 +245,7 @@ All user data tables implement strict RLS policies:
 - Node.js 18+
 - npm or yarn
 - Expo CLI
-- Supabase account
+- Supabase account (optional - app works with mock data)
 
 ### Installation
 ```bash
@@ -257,6 +257,11 @@ npm install
 npm run dev
 ```
 
+The app will run with mock data. To enable full functionality with real database:
+1. Set up a Supabase project
+2. Add your credentials to `.env` file
+3. Apply the database migration (see DATABASE_SETUP.md)
+
 ### Building
 ```bash
 npm run build:web
@@ -266,6 +271,19 @@ npm run build:web
 ```bash
 npm run typecheck
 ```
+
+### Running Without Supabase
+
+The app is configured to work without Supabase credentials:
+- All UI features work with mock data
+- Theme preferences are saved locally with AsyncStorage
+- Database features (bookmarks, notes) show empty states
+- Authentication is optional
+
+To add real data:
+1. Configure Supabase in `.env`
+2. Apply database migration
+3. Populate Bible content
 
 ## License
 MIT License - feel free to use this project as a foundation for your own Bible app!
