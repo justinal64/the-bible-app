@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import Animated, { FadeInDown, Layout } from 'react-native-reanimated';
 import { useTheme } from '../contexts/ThemeContext';
 import { BibleVerse } from '../types/bible';
 import { Spacing, BorderRadius } from '../constants/theme';
@@ -97,33 +98,38 @@ export function BibleReader({
   return (
     <View style={styles.container}>
       <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
-        {verses.map((verse) => {
+        {verses.map((verse, index) => {
           const isHighlighted = highlightedVerses.has(verse.verse);
           const isBookmarked = bookmarkedVerses.has(verse.verse);
 
           return (
-            <TouchableOpacity
+            <Animated.View
               key={verse.id}
-              onPress={() => onVersePress?.(verse.verse)}
-              activeOpacity={0.9}
+              entering={FadeInDown.delay(index * 50).springify().damping(12)}
+              layout={Layout.springify()}
             >
-              <Card
-                style={[
-                  styles.verseContainer,
-                  isHighlighted && { backgroundColor: colors.highlight.yellow, borderColor: colors.warning },
-                  isBookmarked && { borderLeftWidth: 6, borderLeftColor: colors.primary },
-                ]}
-                padding="md"
-                variant={isHighlighted ? 'elevated' : 'default'}
+              <TouchableOpacity
+                onPress={() => onVersePress?.(verse.verse)}
+                activeOpacity={0.9}
               >
-                <View style={styles.verseRow}>
-                  {verseNumbersVisible && (
-                    <Text style={styles.verseNumber}>{verse.verse}</Text>
-                  )}
-                  <Text style={styles.verseText}>{verse.text}</Text>
-                </View>
-              </Card>
-            </TouchableOpacity>
+                <Card
+                  style={[
+                    styles.verseContainer,
+                    isHighlighted && { backgroundColor: colors.highlight.yellow, borderColor: colors.warning },
+                    isBookmarked && { borderLeftWidth: 6, borderLeftColor: colors.primary },
+                  ]}
+                  padding="md"
+                  variant={isHighlighted ? 'elevated' : 'default'}
+                >
+                  <View style={styles.verseRow}>
+                    {verseNumbersVisible && (
+                      <Text style={styles.verseNumber}>{verse.verse}</Text>
+                    )}
+                    <Text style={styles.verseText}>{verse.text}</Text>
+                  </View>
+                </Card>
+              </TouchableOpacity>
+            </Animated.View>
           );
         })}
       </ScrollView>
