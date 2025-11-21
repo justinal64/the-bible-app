@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
-import { Spacing, BorderRadius } from '../constants/theme';
+import { Spacing } from '../constants/theme';
+import { Button } from './ui/Button';
 
 interface ChapterSelectorProps {
   totalChapters: number;
@@ -14,47 +15,23 @@ export function ChapterSelector({
   currentChapter,
   onSelectChapter,
 }: ChapterSelectorProps) {
-  const { colors, fontSizes } = useTheme();
+  const { colors } = useTheme();
 
   const styles = StyleSheet.create({
     container: {
-      backgroundColor: colors.surface,
+      backgroundColor: colors.background,
       paddingVertical: Spacing.md,
     },
     grid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
       paddingHorizontal: Spacing.sm,
-    },
-    chapterButton: {
-      width: '14.28%',
-      aspectRatio: 1,
       justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: Spacing.sm,
+      gap: Spacing.sm,
     },
-    chapterButtonInner: {
-      width: '90%',
-      height: '90%',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: BorderRadius.md,
-      backgroundColor: colors.surfaceSecondary,
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-    chapterButtonActive: {
-      backgroundColor: colors.primary,
-      borderColor: colors.primary,
-    },
-    chapterText: {
-      fontSize: fontSizes.sm,
-      color: colors.text,
-      fontWeight: '500',
-    },
-    chapterTextActive: {
-      color: '#ffffff',
-      fontWeight: '700',
+    chapterButtonWrapper: {
+      width: 60,
+      height: 60,
     },
   });
 
@@ -62,23 +39,15 @@ export function ChapterSelector({
     <ScrollView style={styles.container}>
       <View style={styles.grid}>
         {Array.from({ length: totalChapters }, (_, i) => i + 1).map((chapter) => (
-          <View key={chapter} style={styles.chapterButton}>
-            <TouchableOpacity
-              style={[
-                styles.chapterButtonInner,
-                currentChapter === chapter && styles.chapterButtonActive,
-              ]}
+          <View key={chapter} style={styles.chapterButtonWrapper}>
+            <Button
+              title={chapter.toString()}
               onPress={() => onSelectChapter(chapter)}
-            >
-              <Text
-                style={[
-                  styles.chapterText,
-                  currentChapter === chapter && styles.chapterTextActive,
-                ]}
-              >
-                {chapter}
-              </Text>
-            </TouchableOpacity>
+              variant={currentChapter === chapter ? 'primary' : 'outline'}
+              size="sm"
+              style={{ width: '100%', height: '100%', paddingHorizontal: 0, paddingVertical: 0 }}
+              textStyle={{ fontSize: 16 }}
+            />
           </View>
         ))}
       </View>

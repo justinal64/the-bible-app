@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Switch } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Switch, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { Moon, Sun, Type, AlignLeft, Hash, User, LogOut } from 'lucide-react-native';
 import { Spacing, BorderRadius } from '../../constants/theme';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
 
 export default function SettingsScreen() {
   const { colors, fontSizes, theme, fontSize, lineSpacing, verseNumbersVisible, toggleTheme, setFontSize, setLineSpacing, toggleVerseNumbers } = useTheme();
@@ -16,45 +18,35 @@ export default function SettingsScreen() {
       backgroundColor: colors.background,
     },
     header: {
-      backgroundColor: colors.surface,
       paddingHorizontal: Spacing.md,
       paddingVertical: Spacing.md,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.border,
+      backgroundColor: colors.background,
     },
     title: {
       fontSize: fontSizes['2xl'],
       color: colors.text,
-      fontWeight: '700',
+      fontWeight: '800',
     },
     content: {
       flex: 1,
     },
     scrollContent: {
       padding: Spacing.md,
-    },
-    section: {
-      marginBottom: Spacing.xl,
+      gap: Spacing.lg,
     },
     sectionTitle: {
       fontSize: fontSizes.sm,
       color: colors.textSecondary,
-      fontWeight: '600',
+      fontWeight: '700',
       textTransform: 'uppercase',
       marginBottom: Spacing.sm,
-      letterSpacing: 0.5,
+      letterSpacing: 1,
+      marginLeft: Spacing.xs,
     },
     settingItem: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingVertical: Spacing.md,
-      paddingHorizontal: Spacing.md,
-      backgroundColor: colors.surface,
-      borderRadius: BorderRadius.md,
-      marginBottom: Spacing.sm,
-      borderWidth: 1,
-      borderColor: colors.border,
     },
     settingLeft: {
       flexDirection: 'row',
@@ -62,9 +54,9 @@ export default function SettingsScreen() {
       flex: 1,
     },
     iconContainer: {
-      width: 36,
-      height: 36,
-      borderRadius: BorderRadius.md,
+      width: 40,
+      height: 40,
+      borderRadius: BorderRadius.lg,
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
@@ -76,89 +68,46 @@ export default function SettingsScreen() {
     settingLabel: {
       fontSize: fontSizes.base,
       color: colors.text,
-      fontWeight: '500',
-      marginBottom: Spacing.xs,
+      fontWeight: '700',
+      marginBottom: 2,
     },
     settingValue: {
       fontSize: fontSizes.sm,
       color: colors.textSecondary,
+      fontWeight: '600',
     },
     optionsContainer: {
       flexDirection: 'row',
-      gap: Spacing.xs,
+      gap: Spacing.sm,
       flexWrap: 'wrap',
-    },
-    optionButton: {
-      paddingVertical: Spacing.xs,
-      paddingHorizontal: Spacing.md,
-      backgroundColor: colors.surfaceSecondary,
-      borderRadius: BorderRadius.md,
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-    optionButtonActive: {
-      backgroundColor: colors.primary,
-      borderColor: colors.primary,
-    },
-    optionButtonText: {
-      fontSize: fontSizes.sm,
-      color: colors.text,
-      fontWeight: '500',
-    },
-    optionButtonTextActive: {
-      color: '#ffffff',
-    },
-    userSection: {
-      padding: Spacing.md,
-      backgroundColor: colors.surface,
-      borderRadius: BorderRadius.lg,
-      marginBottom: Spacing.md,
-      borderWidth: 1,
-      borderColor: colors.border,
+      marginTop: Spacing.sm,
     },
     userInfo: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: Spacing.md,
+      marginBottom: Spacing.lg,
     },
     avatar: {
-      width: 56,
-      height: 56,
-      borderRadius: 28,
-      backgroundColor: colors.primary,
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      backgroundColor: colors.secondary,
       justifyContent: 'center',
       alignItems: 'center',
       marginRight: Spacing.md,
+      borderWidth: 3,
+      borderColor: colors.secondaryDark,
     },
     userEmail: {
-      fontSize: fontSizes.base,
+      fontSize: fontSizes.lg,
       color: colors.text,
-      fontWeight: '600',
+      fontWeight: '700',
     },
-    signOutButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingVertical: Spacing.md,
-      backgroundColor: colors.error,
-      borderRadius: BorderRadius.md,
-    },
-    signOutButtonText: {
+    signInText: {
+      textAlign: 'center',
+      marginBottom: Spacing.md,
       fontSize: fontSizes.base,
-      color: '#ffffff',
-      fontWeight: '600',
-      marginLeft: Spacing.sm,
-    },
-    signInButton: {
-      paddingVertical: Spacing.md,
-      paddingHorizontal: Spacing.xl,
-      backgroundColor: colors.primary,
-      borderRadius: BorderRadius.md,
-      alignItems: 'center',
-    },
-    signInButtonText: {
-      fontSize: fontSizes.base,
-      color: '#ffffff',
+      color: colors.textSecondary,
       fontWeight: '600',
     },
   });
@@ -170,145 +119,137 @@ export default function SettingsScreen() {
       </View>
       <ScrollView style={styles.content} contentContainerStyle={styles.scrollContent}>
         {user ? (
-          <View style={styles.userSection}>
+          <Card padding="lg">
             <View style={styles.userInfo}>
               <View style={styles.avatar}>
-                <User size={28} color="#ffffff" />
+                <User size={32} color="#ffffff" />
               </View>
               <View>
                 <Text style={styles.userEmail}>{user.email}</Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.signOutButton} onPress={signOut}>
-              <LogOut size={20} color="#ffffff" />
-              <Text style={styles.signOutButtonText}>Sign Out</Text>
-            </TouchableOpacity>
-          </View>
+            <Button
+              title="Sign Out"
+              onPress={signOut}
+              variant="danger"
+              icon={<LogOut size={20} color="#ffffff" />}
+            />
+          </Card>
         ) : (
-          <View style={styles.userSection}>
-            <Text style={[styles.settingLabel, { textAlign: 'center', marginBottom: Spacing.md }]}>
+          <Card padding="lg">
+            <Text style={styles.signInText}>
               Sign in to sync your data
             </Text>
-            <TouchableOpacity style={styles.signInButton}>
-              <Text style={styles.signInButtonText}>Sign In</Text>
-            </TouchableOpacity>
-          </View>
+            <Button title="Sign In" onPress={() => {}} />
+          </Card>
         )}
 
-        <View style={styles.section}>
+        <View>
           <Text style={styles.sectionTitle}>Appearance</Text>
-
-          <TouchableOpacity style={styles.settingItem} onPress={toggleTheme}>
-            <View style={styles.settingLeft}>
-              <View style={styles.iconContainer}>
-                {theme === 'light' ? (
-                  <Sun size={20} color="#ffffff" />
-                ) : (
-                  <Moon size={20} color="#ffffff" />
-                )}
+          <Card>
+            <TouchableOpacity style={styles.settingItem} onPress={toggleTheme} activeOpacity={0.7}>
+              <View style={styles.settingLeft}>
+                <View style={[styles.iconContainer, { backgroundColor: theme === 'light' ? colors.warning : colors.secondary }]}>
+                  {theme === 'light' ? (
+                    <Sun size={24} color="#ffffff" />
+                  ) : (
+                    <Moon size={24} color="#ffffff" />
+                  )}
+                </View>
+                <View style={styles.settingText}>
+                  <Text style={styles.settingLabel}>Theme</Text>
+                  <Text style={styles.settingValue}>
+                    {theme === 'light' ? 'Light Mode' : 'Dark Mode'}
+                  </Text>
+                </View>
               </View>
-              <View style={styles.settingText}>
-                <Text style={styles.settingLabel}>Theme</Text>
-                <Text style={styles.settingValue}>
-                  {theme === 'light' ? 'Light' : 'Dark'}
-                </Text>
-              </View>
-            </View>
-            <Switch
-              value={theme === 'dark'}
-              onValueChange={toggleTheme}
-              trackColor={{ false: colors.border, true: colors.primary }}
-              thumbColor="#ffffff"
-            />
-          </TouchableOpacity>
+              <Switch
+                value={theme === 'dark'}
+                onValueChange={toggleTheme}
+                trackColor={{ false: colors.border, true: colors.primary }}
+                thumbColor="#ffffff"
+              />
+            </TouchableOpacity>
+          </Card>
         </View>
 
-        <View style={styles.section}>
+        <View>
           <Text style={styles.sectionTitle}>Reading</Text>
-
-          <View style={styles.settingItem}>
-            <View style={styles.settingLeft}>
-              <View style={styles.iconContainer}>
-                <Type size={20} color="#ffffff" />
-              </View>
-              <View style={styles.settingText}>
-                <Text style={styles.settingLabel}>Font Size</Text>
-                <View style={styles.optionsContainer}>
-                  {(['small', 'medium', 'large', 'xlarge'] as const).map((size) => (
-                    <TouchableOpacity
-                      key={size}
-                      style={[
-                        styles.optionButton,
-                        fontSize === size && styles.optionButtonActive,
-                      ]}
-                      onPress={() => setFontSize(size)}
-                    >
-                      <Text
-                        style={[
-                          styles.optionButtonText,
-                          fontSize === size && styles.optionButtonTextActive,
-                        ]}
-                      >
-                        {size.charAt(0).toUpperCase() + size.slice(1)}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
+          <Card padding="lg">
+            <View style={[styles.settingItem, { marginBottom: Spacing.md }]}>
+              <View style={styles.settingLeft}>
+                <View style={[styles.iconContainer, { backgroundColor: colors.secondary }]}>
+                  <Type size={24} color="#ffffff" />
+                </View>
+                <View style={styles.settingText}>
+                  <Text style={styles.settingLabel}>Font Size</Text>
                 </View>
               </View>
             </View>
-          </View>
+            <View style={styles.optionsContainer}>
+              {(['small', 'medium', 'large', 'xlarge'] as const).map((size) => (
+                <View key={size} style={{ flex: 1 }}>
+                  <Button
+                    title={size === 'xlarge' ? 'XL' : size.charAt(0).toUpperCase() + size.slice(1)}
+                    onPress={() => setFontSize(size)}
+                    variant={fontSize === size ? 'primary' : 'outline'}
+                    size="sm"
+                  />
+                </View>
+              ))}
+            </View>
+          </Card>
 
-          <View style={styles.settingItem}>
-            <View style={styles.settingLeft}>
-              <View style={styles.iconContainer}>
-                <AlignLeft size={20} color="#ffffff" />
-              </View>
-              <View style={styles.settingText}>
-                <Text style={styles.settingLabel}>Line Spacing</Text>
-                <View style={styles.optionsContainer}>
-                  {(['compact', 'normal', 'relaxed'] as const).map((spacing) => (
-                    <TouchableOpacity
-                      key={spacing}
-                      style={[
-                        styles.optionButton,
-                        lineSpacing === spacing && styles.optionButtonActive,
-                      ]}
-                      onPress={() => setLineSpacing(spacing)}
-                    >
-                      <Text
-                        style={[
-                          styles.optionButtonText,
-                          lineSpacing === spacing && styles.optionButtonTextActive,
-                        ]}
-                      >
-                        {spacing.charAt(0).toUpperCase() + spacing.slice(1)}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
+          <View style={{ height: Spacing.md }} />
+
+          <Card padding="lg">
+            <View style={[styles.settingItem, { marginBottom: Spacing.md }]}>
+              <View style={styles.settingLeft}>
+                <View style={[styles.iconContainer, { backgroundColor: colors.highlight.purple }]}>
+                  <AlignLeft size={24} color="#ffffff" />
+                </View>
+                <View style={styles.settingText}>
+                  <Text style={styles.settingLabel}>Line Spacing</Text>
                 </View>
               </View>
             </View>
-          </View>
-
-          <TouchableOpacity style={styles.settingItem} onPress={toggleVerseNumbers}>
-            <View style={styles.settingLeft}>
-              <View style={styles.iconContainer}>
-                <Hash size={20} color="#ffffff" />
-              </View>
-              <View style={styles.settingText}>
-                <Text style={styles.settingLabel}>Verse Numbers</Text>
-                <Text style={styles.settingValue}>
-                  {verseNumbersVisible ? 'Shown' : 'Hidden'}
-                </Text>
-              </View>
+            <View style={styles.optionsContainer}>
+              {(['compact', 'normal', 'relaxed'] as const).map((spacing) => (
+                <View key={spacing} style={{ flex: 1 }}>
+                  <Button
+                    title={spacing.charAt(0).toUpperCase() + spacing.slice(1)}
+                    onPress={() => setLineSpacing(spacing)}
+                    variant={lineSpacing === spacing ? 'primary' : 'outline'}
+                    size="sm"
+                  />
+                </View>
+              ))}
             </View>
-            <Switch
-              value={verseNumbersVisible}
-              onValueChange={toggleVerseNumbers}
-              trackColor={{ false: colors.border, true: colors.primary }}
-              thumbColor="#ffffff"
-            />
-          </TouchableOpacity>
+          </Card>
+
+          <View style={{ height: Spacing.md }} />
+
+          <Card>
+            <TouchableOpacity style={styles.settingItem} onPress={toggleVerseNumbers} activeOpacity={0.7}>
+              <View style={styles.settingLeft}>
+                <View style={[styles.iconContainer, { backgroundColor: colors.highlight.pink }]}>
+                  <Hash size={24} color="#ffffff" />
+                </View>
+                <View style={styles.settingText}>
+                  <Text style={styles.settingLabel}>Verse Numbers</Text>
+                  <Text style={styles.settingValue}>
+                    {verseNumbersVisible ? 'Shown' : 'Hidden'}
+                  </Text>
+                </View>
+              </View>
+              <Switch
+                value={verseNumbersVisible}
+                onValueChange={toggleVerseNumbers}
+                trackColor={{ false: colors.border, true: colors.primary }}
+                thumbColor="#ffffff"
+              />
+            </TouchableOpacity>
+          </Card>
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator
 import { useTheme } from '../contexts/ThemeContext';
 import { BibleVerse } from '../types/bible';
 import { Spacing, BorderRadius } from '../constants/theme';
+import { Card } from './ui/Card';
 
 interface BibleReaderProps {
   bookId: number;
@@ -58,8 +59,6 @@ export function BibleReader({
     },
     verseContainer: {
       marginBottom: Spacing.md,
-      padding: Spacing.sm,
-      borderRadius: BorderRadius.md,
     },
     verseRow: {
       flexDirection: 'row',
@@ -68,9 +67,9 @@ export function BibleReader({
     verseNumber: {
       fontSize: fontSizes.xs,
       color: colors.textSecondary,
-      fontWeight: '600',
-      marginRight: Spacing.xs,
-      marginTop: 2,
+      fontWeight: '700',
+      marginRight: Spacing.sm,
+      marginTop: 4,
       minWidth: 24,
     },
     verseText: {
@@ -78,13 +77,7 @@ export function BibleReader({
       fontSize: fontSizes.base,
       color: colors.text,
       lineHeight: fontSizes.base * lineSpacingValue,
-    },
-    highlighted: {
-      backgroundColor: colors.highlight.yellow,
-    },
-    bookmarked: {
-      borderLeftWidth: 3,
-      borderLeftColor: colors.primary,
+      fontWeight: '500',
     },
     loadingContainer: {
       flex: 1,
@@ -111,20 +104,25 @@ export function BibleReader({
           return (
             <TouchableOpacity
               key={verse.id}
-              style={[
-                styles.verseContainer,
-                isHighlighted && styles.highlighted,
-                isBookmarked && styles.bookmarked,
-              ]}
               onPress={() => onVersePress?.(verse.verse)}
-              activeOpacity={0.7}
+              activeOpacity={0.9}
             >
-              <View style={styles.verseRow}>
-                {verseNumbersVisible && (
-                  <Text style={styles.verseNumber}>{verse.verse}</Text>
-                )}
-                <Text style={styles.verseText}>{verse.text}</Text>
-              </View>
+              <Card
+                style={[
+                  styles.verseContainer,
+                  isHighlighted && { backgroundColor: colors.highlight.yellow, borderColor: colors.warning },
+                  isBookmarked && { borderLeftWidth: 6, borderLeftColor: colors.primary },
+                ]}
+                padding="md"
+                variant={isHighlighted ? 'elevated' : 'default'}
+              >
+                <View style={styles.verseRow}>
+                  {verseNumbersVisible && (
+                    <Text style={styles.verseNumber}>{verse.verse}</Text>
+                  )}
+                  <Text style={styles.verseText}>{verse.text}</Text>
+                </View>
+              </Card>
             </TouchableOpacity>
           );
         })}

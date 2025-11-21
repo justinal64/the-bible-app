@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import { BIBLE_BOOKS } from '../constants/bibleBooks';
 import { Spacing, BorderRadius } from '../constants/theme';
+import { Button } from './ui/Button';
+import { Card } from './ui/Card';
 
 interface BookSelectorProps {
   onSelectBook: (bookId: number) => void;
@@ -24,62 +26,38 @@ export function BookSelector({ onSelectBook, currentBookId }: BookSelectorProps)
     },
     tabContainer: {
       flexDirection: 'row',
-      backgroundColor: colors.surface,
-      padding: Spacing.xs,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.border,
+      padding: Spacing.md,
+      gap: Spacing.md,
+      backgroundColor: colors.background,
     },
-    tab: {
+    tabButton: {
       flex: 1,
-      paddingVertical: Spacing.sm,
-      paddingHorizontal: Spacing.md,
-      borderRadius: BorderRadius.md,
-      alignItems: 'center',
-    },
-    tabActive: {
-      backgroundColor: colors.primary,
-    },
-    tabText: {
-      fontSize: fontSizes.sm,
-      color: colors.textSecondary,
-      fontWeight: '600',
-    },
-    tabTextActive: {
-      color: '#ffffff',
     },
     bookList: {
       padding: Spacing.md,
+      paddingTop: 0,
     },
     bookItem: {
+      marginBottom: Spacing.sm,
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingVertical: Spacing.md,
-      paddingHorizontal: Spacing.md,
-      backgroundColor: colors.surface,
-      borderRadius: BorderRadius.md,
-      marginBottom: Spacing.sm,
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-    bookItemActive: {
-      backgroundColor: colors.primary,
-      borderColor: colors.primary,
     },
     bookName: {
       fontSize: fontSizes.base,
       color: colors.text,
-      fontWeight: '500',
+      fontWeight: '700',
     },
     bookNameActive: {
-      color: '#ffffff',
+      color: '#FFFFFF',
     },
     chapterCount: {
       fontSize: fontSizes.sm,
       color: colors.textSecondary,
+      fontWeight: '600',
     },
     chapterCountActive: {
-      color: '#ffffff',
+      color: '#FFFFFF',
       opacity: 0.9,
     },
   });
@@ -87,55 +65,49 @@ export function BookSelector({ onSelectBook, currentBookId }: BookSelectorProps)
   return (
     <View style={styles.container}>
       <View style={styles.tabContainer}>
-        <TouchableOpacity
-          style={[styles.tab, selectedTestament === 'Old Testament' && styles.tabActive]}
-          onPress={() => setSelectedTestament('Old Testament')}
-        >
-          <Text
-            style={[
-              styles.tabText,
-              selectedTestament === 'Old Testament' && styles.tabTextActive,
-            ]}
-          >
-            Old Testament
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, selectedTestament === 'New Testament' && styles.tabActive]}
-          onPress={() => setSelectedTestament('New Testament')}
-        >
-          <Text
-            style={[
-              styles.tabText,
-              selectedTestament === 'New Testament' && styles.tabTextActive,
-            ]}
-          >
-            New Testament
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.tabButton}>
+          <Button
+            title="Old Testament"
+            onPress={() => setSelectedTestament('Old Testament')}
+            variant={selectedTestament === 'Old Testament' ? 'primary' : 'outline'}
+            size="sm"
+          />
+        </View>
+        <View style={styles.tabButton}>
+          <Button
+            title="New Testament"
+            onPress={() => setSelectedTestament('New Testament')}
+            variant={selectedTestament === 'New Testament' ? 'primary' : 'outline'}
+            size="sm"
+          />
+        </View>
       </View>
       <ScrollView contentContainerStyle={styles.bookList}>
-        {displayedBooks.map((book) => (
-          <TouchableOpacity
-            key={book.id}
-            style={[styles.bookItem, currentBookId === book.id && styles.bookItemActive]}
-            onPress={() => onSelectBook(book.id)}
-          >
-            <Text
-              style={[styles.bookName, currentBookId === book.id && styles.bookNameActive]}
+        {displayedBooks.map((book) => {
+          const isActive = currentBookId === book.id;
+          return (
+            <TouchableOpacity
+              key={book.id}
+              onPress={() => onSelectBook(book.id)}
+              activeOpacity={0.7}
             >
-              {book.name}
-            </Text>
-            <Text
-              style={[
-                styles.chapterCount,
-                currentBookId === book.id && styles.chapterCountActive,
-              ]}
-            >
-              {book.chapterCount} chapters
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Card
+                style={[
+                  styles.bookItem,
+                  isActive && { backgroundColor: colors.secondary, borderColor: colors.secondaryDark },
+                ]}
+                padding="md"
+              >
+                <Text style={[styles.bookName, isActive && styles.bookNameActive]}>
+                  {book.name}
+                </Text>
+                <Text style={[styles.chapterCount, isActive && styles.chapterCountActive]}>
+                  {book.chapterCount} chapters
+                </Text>
+              </Card>
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
     </View>
   );

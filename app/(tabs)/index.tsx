@@ -6,8 +6,9 @@ import { BibleReader } from '../../components/BibleReader';
 import { BookSelector } from '../../components/BookSelector';
 import { ChapterSelector } from '../../components/ChapterSelector';
 import { BIBLE_BOOKS } from '../../constants/bibleBooks';
-import { ChevronDown } from 'lucide-react-native';
+import { ChevronDown, X } from 'lucide-react-native';
 import { Spacing, BorderRadius } from '../../constants/theme';
+import { Button } from '../../components/ui/Button';
 
 export default function ReadScreen() {
   const { colors, fontSizes } = useTheme();
@@ -35,32 +36,18 @@ export default function ReadScreen() {
       backgroundColor: colors.background,
     },
     header: {
-      backgroundColor: colors.surface,
+      backgroundColor: colors.background,
       paddingHorizontal: Spacing.md,
       paddingVertical: Spacing.sm,
-      borderBottomWidth: 1,
+      borderBottomWidth: 2,
       borderBottomColor: colors.border,
     },
     selectorRow: {
       flexDirection: 'row',
       gap: Spacing.sm,
     },
-    selectorButton: {
+    selectorButtonWrapper: {
       flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingVertical: Spacing.sm,
-      paddingHorizontal: Spacing.md,
-      backgroundColor: colors.surfaceSecondary,
-      borderRadius: BorderRadius.md,
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-    selectorText: {
-      fontSize: fontSizes.base,
-      color: colors.text,
-      fontWeight: '600',
     },
     modalContainer: {
       flex: 1,
@@ -72,23 +59,17 @@ export default function ReadScreen() {
       alignItems: 'center',
       paddingHorizontal: Spacing.md,
       paddingVertical: Spacing.md,
-      backgroundColor: colors.surface,
-      borderBottomWidth: 1,
+      backgroundColor: colors.background,
+      borderBottomWidth: 2,
       borderBottomColor: colors.border,
     },
     modalTitle: {
       fontSize: fontSizes.lg,
       color: colors.text,
-      fontWeight: '600',
+      fontWeight: '700',
     },
     closeButton: {
-      paddingHorizontal: Spacing.md,
-      paddingVertical: Spacing.sm,
-    },
-    closeButtonText: {
-      fontSize: fontSizes.base,
-      color: colors.primary,
-      fontWeight: '600',
+      padding: Spacing.xs,
     },
   });
 
@@ -96,20 +77,22 @@ export default function ReadScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <View style={styles.selectorRow}>
-          <TouchableOpacity
-            style={styles.selectorButton}
-            onPress={() => setShowBookSelector(true)}
-          >
-            <Text style={styles.selectorText}>{currentBook?.name}</Text>
-            <ChevronDown size={20} color={colors.text} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.selectorButton}
-            onPress={() => setShowChapterSelector(true)}
-          >
-            <Text style={styles.selectorText}>Chapter {chapter}</Text>
-            <ChevronDown size={20} color={colors.text} />
-          </TouchableOpacity>
+          <View style={styles.selectorButtonWrapper}>
+            <Button
+              title={currentBook?.name || 'Select Book'}
+              onPress={() => setShowBookSelector(true)}
+              variant="secondary"
+              icon={<ChevronDown size={18} color="#FFFFFF" />}
+            />
+          </View>
+          <View style={styles.selectorButtonWrapper}>
+            <Button
+              title={`Chapter ${chapter}`}
+              onPress={() => setShowChapterSelector(true)}
+              variant="secondary"
+              icon={<ChevronDown size={18} color="#FFFFFF" />}
+            />
+          </View>
         </View>
       </View>
 
@@ -132,7 +115,7 @@ export default function ReadScreen() {
               style={styles.closeButton}
               onPress={() => setShowBookSelector(false)}
             >
-              <Text style={styles.closeButtonText}>Close</Text>
+              <X size={24} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
           <BookSelector onSelectBook={handleBookSelect} currentBookId={bookId} />
@@ -151,7 +134,7 @@ export default function ReadScreen() {
               style={styles.closeButton}
               onPress={() => setShowChapterSelector(false)}
             >
-              <Text style={styles.closeButtonText}>Close</Text>
+              <X size={24} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
           <ChapterSelector
