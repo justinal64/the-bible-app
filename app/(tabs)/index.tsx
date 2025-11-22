@@ -99,7 +99,7 @@ export default function ReadScreen() {
       <BibleReader
         bookId={bookId}
         chapter={chapter}
-        translationId="niv"
+        translationId="de4e12af7f28f599-01" // KJV
         onVersePress={(verse) => console.log('Verse pressed:', verse)}
       />
 

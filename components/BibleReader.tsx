@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import Animated, { FadeInDown, Layout } from 'react-native-reanimated';
 import { useTheme } from '../contexts/ThemeContext';
+import { supabase } from '../lib/supabase';
 import { BibleVerse } from '../types/bible';
+import { BOOK_ID_TO_CODE } from '../utils/bibleMapping';
 import { Spacing, BorderRadius } from '../constants/theme';
 import { Card } from './ui/Card';
 
@@ -34,6 +36,33 @@ export function BibleReader({
   const loadVerses = async () => {
     setLoading(true);
     try {
+      const bookCode = BOOK_ID_TO_CODE[bookId];
+      if (!bookCode) throw new Error(`Invalid book ID: ${bookId}`);
+
+      const { data, error } = await supabase.functions.invoke('bible-proxy', {
+        body: {
+          path: `/bibles/${translationId}/chapters/${bookCode}.${chapter}`,
+          params: { 'content-type': 'json' }
+        }
+      });
+
+      if (error) throw error;
+
+      // The Edge Function now returns the parsed verses directly
+      // structure: { data: [{ id, verse, text }, ...] }
+      const apiVerses = data.data.map((item: any) => ({
+        id: item.id,
+        translationId,
+        bookId,
+        chapter,
+        verse: item.verse,
+        text: item.text,
+      }));
+
+      setVerses(apiVerses);
+    } catch (error) {
+      console.error('Failed to load verses:', error);
+      // Fallback to mock data for now if API fails (or if key is missing)
       const mockVerses: BibleVerse[] = Array.from({ length: 20 }, (_, i) => ({
         id: `${bookId}-${chapter}-${i + 1}`,
         translationId,
@@ -43,8 +72,6 @@ export function BibleReader({
         text: `This is verse ${i + 1} of chapter ${chapter}. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
       }));
       setVerses(mockVerses);
-    } catch (error) {
-      console.error('Failed to load verses:', error);
     } finally {
       setLoading(false);
     }
