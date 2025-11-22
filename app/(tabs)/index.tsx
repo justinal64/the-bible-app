@@ -5,6 +5,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { BibleReader } from '../../components/BibleReader';
 import { BookSelector } from '../../components/BookSelector';
 import { ChapterSelector } from '../../components/ChapterSelector';
+import { TranslationSelector } from '../../components/TranslationSelector';
 import { BIBLE_BOOKS } from '../../constants/bibleBooks';
 import { ChevronDown, X } from 'lucide-react-native';
 import { Spacing, BorderRadius } from '../../constants/theme';
@@ -14,6 +15,7 @@ export default function ReadScreen() {
   const { colors, fontSizes } = useTheme();
   const [bookId, setBookId] = useState(1);
   const [chapter, setChapter] = useState(1);
+  const [translationId, setTranslationId] = useState('de4e12af7f28f599-01'); // KJV
   const [showBookSelector, setShowBookSelector] = useState(false);
   const [showChapterSelector, setShowChapterSelector] = useState(false);
 
@@ -78,6 +80,12 @@ export default function ReadScreen() {
       <View style={styles.header}>
         <View style={styles.selectorRow}>
           <View style={styles.selectorButtonWrapper}>
+            <TranslationSelector
+              selectedTranslationId={translationId}
+              onTranslationChange={setTranslationId}
+            />
+          </View>
+          <View style={styles.selectorButtonWrapper}>
             <Button
               title={currentBook?.name || 'Select Book'}
               onPress={() => setShowBookSelector(true)}
@@ -99,7 +107,7 @@ export default function ReadScreen() {
       <BibleReader
         bookId={bookId}
         chapter={chapter}
-        translationId="de4e12af7f28f599-01" // KJV
+        translationId={translationId}
         onVersePress={(verse) => console.log('Verse pressed:', verse)}
       />
 
