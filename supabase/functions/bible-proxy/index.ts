@@ -28,9 +28,10 @@ serve(async (req) => {
     const targetUrl = `https://rest.api.bible/v1${path}?${queryString}`
 
     console.log(`Proxying request to: ${targetUrl}`)
+    console.log(`Using API key: ${apiKey.substring(0, 5)}...`)
 
     const response = await fetch(targetUrl, {
-      method: req.method,
+      method: 'GET',
       headers: {
         'api-key': apiKey,
         'Accept': 'application/json',
