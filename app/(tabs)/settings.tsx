@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, Switch, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Switch, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { GlassCard } from '../../components/ui/GlassCard';
@@ -12,7 +12,7 @@ export default function SettingsScreen() {
         <View className="w-8 h-8 items-center justify-center rounded-full bg-gray-800 mr-3">
           {icon}
         </View>
-        <Text className="text-base" style={{ color: '#FFFFFF' }}>{label}</Text>
+        <Text className="text-base text-text-primary">{label}</Text>
       </View>
       {type === 'toggle' ? (
         <Switch
@@ -28,13 +28,13 @@ export default function SettingsScreen() {
 
   return (
     <GalaxyBackground>
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <ScrollView contentContainerStyle={{ padding: 20 }}>
-          <Text className="text-2xl font-bold mb-8" style={{ color: '#FFFFFF' }}>Settings</Text>
+      <SafeAreaView className="flex-1" edges={['top']}>
+        <ScrollView contentContainerClassName="p-5">
+          <Text className="text-2xl font-bold mb-8 text-text-primary">Settings</Text>
 
           <GlassCard style={{ marginBottom: 24, padding: 0 }}>
             <View className="p-4">
-              <Text className="text-xs font-bold uppercase mb-2" style={{ color: '#D4AF37' }}>Appearance</Text>
+              <Text className="text-xs font-bold uppercase mb-2 text-gold">Appearance</Text>
               <SettingItem
                 icon={<Moon size={18} color="#FFF" />}
                 label="Dark Mode"
@@ -50,7 +50,7 @@ export default function SettingsScreen() {
 
           <GlassCard style={{ marginBottom: 24, padding: 0 }}>
             <View className="p-4">
-              <Text className="text-xs font-bold uppercase mb-2" style={{ color: '#D4AF37' }}>Notifications</Text>
+              <Text className="text-xs font-bold uppercase mb-2 text-gold">Notifications</Text>
               <SettingItem
                 icon={<Bell size={18} color="#FFF" />}
                 label="Daily Verse"
@@ -61,7 +61,7 @@ export default function SettingsScreen() {
 
           <GlassCard style={{ marginBottom: 24, padding: 0 }}>
             <View className="p-4">
-              <Text className="text-xs font-bold uppercase mb-2" style={{ color: '#D4AF37' }}>Account</Text>
+              <Text className="text-xs font-bold uppercase mb-2 text-gold">Account</Text>
               <SettingItem
                 icon={<User size={18} color="#FFF" />}
                 label="Profile"
@@ -80,9 +80,3 @@ export default function SettingsScreen() {
     </GalaxyBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});

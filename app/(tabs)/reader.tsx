@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Modal } from 'react-native';
+import { View, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../contexts/ThemeContext';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
@@ -9,7 +9,6 @@ import { ChapterSelector } from '../../components/ChapterSelector';
 import { TranslationSelector } from '../../components/TranslationSelector';
 import { BIBLE_BOOKS } from '../../constants/bibleBooks';
 import { ChevronDown } from 'lucide-react-native';
-import { Spacing } from '../../constants/theme';
 import { Button } from '../../components/ui/Button';
 
 export default function ReaderScreen() {
@@ -58,16 +57,16 @@ export default function ReaderScreen() {
 
   return (
     <GalaxyBackground>
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <View style={styles.header}>
-          <View style={styles.selectorRow}>
-            <View style={styles.selectorButtonWrapper}>
+      <SafeAreaView className="flex-1" edges={['top']}>
+        <View className="px-4 py-2">
+          <View className="flex-row gap-2">
+            <View className="flex-1">
               <TranslationSelector
                 selectedTranslationId={translationId}
                 onTranslationChange={setTranslationId}
               />
             </View>
-            <View style={styles.selectorButtonWrapper}>
+            <View className="flex-1">
               <Button
                 title={currentBook?.name || 'Select Book'}
                 onPress={() => setShowBookSelector(true)}
@@ -75,7 +74,7 @@ export default function ReaderScreen() {
                 icon={<ChevronDown size={18} color="#FFFFFF" />}
               />
             </View>
-            <View style={styles.selectorButtonWrapper}>
+            <View className="flex-1">
               <Button
                 title={`Chapter ${chapter}`}
                 onPress={() => setShowChapterSelector(true)}
@@ -100,8 +99,8 @@ export default function ReaderScreen() {
           animationType="slide"
           presentationStyle="pageSheet"
         >
-          <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top']}>
-            <View style={{ padding: Spacing.md, flexDirection: 'row', justifyContent: 'flex-end' }}>
+          <SafeAreaView className="flex-1 bg-galaxy-bg" edges={['top']}>
+            <View className="p-4 flex-row justify-end">
               <Button title="Close" onPress={() => setShowBookSelector(false)} variant="ghost" size="sm" />
             </View>
             <BookSelector
@@ -116,8 +115,8 @@ export default function ReaderScreen() {
           animationType="slide"
           presentationStyle="pageSheet"
         >
-          <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top']}>
-            <View style={{ padding: Spacing.md, flexDirection: 'row', justifyContent: 'flex-end' }}>
+          <SafeAreaView className="flex-1 bg-galaxy-bg" edges={['top']}>
+            <View className="p-4 flex-row justify-end">
               <Button title="Close" onPress={() => setShowChapterSelector(false)} variant="ghost" size="sm" />
             </View>
             <ChapterSelector
@@ -131,20 +130,3 @@ export default function ReaderScreen() {
     </GalaxyBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-  },
-  selectorRow: {
-    flexDirection: 'row',
-    gap: Spacing.sm,
-  },
-  selectorButtonWrapper: {
-    flex: 1,
-  },
-});
