@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Animated, { FadeInDown, LinearTransition } from 'react-native-reanimated';
 import { useTheme } from '../contexts/ThemeContext';
-import { supabase } from '../lib/supabase';
-import { BibleVerse } from '../types/bible';
-import { BOOK_ID_TO_CODE } from '../utils/bibleMapping';
+import { useBibleVerses } from '../hooks/useBibleVerses';
 
 interface BibleReaderProps {
   bookId: number;
@@ -28,44 +25,7 @@ export function BibleReader({
   onPreviousChapter,
 }: BibleReaderProps) {
   const { colors, fontSizes, lineSpacingValue, verseNumbersVisible } = useTheme();
-  const [verses, setVerses] = useState<BibleVerse[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    loadVerses();
-  }, [bookId, chapter, translationId]);
-
-  const loadVerses = async () => {
-    setLoading(true);
-    try {
-      const bookCode = BOOK_ID_TO_CODE[bookId];
-      if (!bookCode) throw new Error(`Invalid book ID: ${bookId}`);
-
-      const { data, error } = await supabase.functions.invoke('bible-proxy', {
-        body: {
-          path: `/bibles/${translationId}/chapters/${bookCode}.${chapter}`,
-          params: { 'content-type': 'json' }
-        }
-      });
-
-      if (error) throw error;
-
-      const apiVerses = data.data.map((item: any) => ({
-        id: item.id,
-        translationId,
-        bookId,
-        chapter,
-        verse: item.verse,
-        text: item.text,
-      }));
-
-      setVerses(apiVerses);
-    } catch (error) {
-      console.error('Failed to load verses:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { verses, loading } = useBibleVerses({ bookId, chapter, translationId });
 
   if (loading) {
     return (
