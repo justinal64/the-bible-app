@@ -1,4 +1,5 @@
 import { Tabs } from 'expo-router';
+import { View } from 'react-native';
 import { useTheme } from '../../contexts/ThemeContext';
 import { BookOpen, Search, Bookmark, Calendar, Settings } from 'lucide-react-native';
 
@@ -9,15 +10,28 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textSecondary,
+        tabBarActiveTintColor: '#D4AF37', // Gold
+        tabBarInactiveTintColor: '#A0A0B0',
         tabBarStyle: {
-          backgroundColor: colors.surface,
-          borderTopColor: colors.border,
+          backgroundColor: '#1A1A2E',
+          borderTopColor: 'rgba(255,255,255,0.1)',
+          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
         },
+        tabBarBackground: () => (
+          <View style={{ flex: 1, backgroundColor: '#0A0A1A' }} />
+        ),
       }}>
       <Tabs.Screen
         name="index"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ size, color }) => <BookOpen size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="reader"
         options={{
           title: 'Read',
           tabBarIcon: ({ size, color }) => <BookOpen size={size} color={color} />,
@@ -31,24 +45,22 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ size, color }) => <Settings size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="bookmarks"
         options={{
-          title: 'Bookmarks',
-          tabBarIcon: ({ size, color }) => <Bookmark size={size} color={color} />,
+          href: null, // Hide from tab bar but keep accessible
         }}
       />
       <Tabs.Screen
         name="plans"
         options={{
-          title: 'Plans',
-          tabBarIcon: ({ size, color }) => <Calendar size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: 'Settings',
-          tabBarIcon: ({ size, color }) => <Settings size={size} color={color} />,
+          href: null, // Hide from tab bar but keep accessible
         }}
       />
     </Tabs>
