@@ -33,6 +33,29 @@ export default function ReaderScreen() {
     setShowChapterSelector(false);
   };
 
+  const handleNextChapter = () => {
+    if (!currentBook) return;
+
+    if (chapter < currentBook.chapterCount) {
+      setChapter(chapter + 1);
+    } else if (bookId < 66) {
+      setBookId(bookId + 1);
+      setChapter(1);
+    }
+  };
+
+  const handlePreviousChapter = () => {
+    if (chapter > 1) {
+      setChapter(chapter - 1);
+    } else if (bookId > 1) {
+      const prevBook = BIBLE_BOOKS.find(b => b.id === bookId - 1);
+      if (prevBook) {
+        setBookId(bookId - 1);
+        setChapter(prevBook.chapterCount);
+      }
+    }
+  };
+
   return (
     <GalaxyBackground>
       <SafeAreaView style={styles.container} edges={['top']}>
@@ -68,6 +91,8 @@ export default function ReaderScreen() {
           chapter={chapter}
           translationId={translationId}
           onVersePress={(verse) => console.log('Verse pressed:', verse)}
+          onNextChapter={handleNextChapter}
+          onPreviousChapter={handlePreviousChapter}
         />
 
         <Modal

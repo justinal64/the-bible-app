@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ImageBackground } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../../contexts/ThemeContext';
 
@@ -12,15 +12,16 @@ export function GalaxyBackground({ children }: GalaxyBackgroundProps) {
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={['#0A0A1A', '#1A1A2E', '#050510']}
-        locations={[0, 0.5, 1]}
+      <ImageBackground
+        source={{ uri: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2072&auto=format&fit=crop' }}
         style={styles.background}
-      />
-      {/* Optional: Add stars or subtle overlay here if needed later */}
-      <View style={styles.content}>
-        {children}
-      </View>
+        resizeMode="cover"
+      >
+        <View style={styles.overlay} />
+        <View style={styles.content}>
+          {children}
+        </View>
+      </ImageBackground>
     </View>
   );
 }
@@ -31,11 +32,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#0A0A1A',
   },
   background: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(10, 10, 26, 0.85)', // Deep dark blue overlay
   },
   content: {
     flex: 1,

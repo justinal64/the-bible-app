@@ -15,6 +15,8 @@ interface BibleReaderProps {
   onVersePress?: (verse: number) => void;
   highlightedVerses?: Set<number>;
   bookmarkedVerses?: Set<number>;
+  onNextChapter?: () => void;
+  onPreviousChapter?: () => void;
 }
 
 export function BibleReader({
@@ -24,6 +26,8 @@ export function BibleReader({
   onVersePress,
   highlightedVerses = new Set(),
   bookmarkedVerses = new Set(),
+  onNextChapter,
+  onPreviousChapter,
 }: BibleReaderProps) {
   const { colors, fontSizes, lineSpacingValue, verseNumbersVisible } = useTheme();
   const [verses, setVerses] = useState<BibleVerse[]>([]);
@@ -86,38 +90,55 @@ export function BibleReader({
       padding: Spacing.md,
       paddingBottom: 100,
     },
-    verseContainer: {
-      marginBottom: Spacing.md,
+    pageContainer: {
       backgroundColor: 'rgba(26, 26, 46, 0.6)',
       borderColor: 'rgba(255, 255, 255, 0.1)',
       borderWidth: 1,
-      borderRadius: 12,
-      padding: 16,
+      borderRadius: 16,
+      padding: 20,
+      minHeight: 400,
     },
-    verseRow: {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
+    chapterText: {
+      color: '#FFFFFF',
+      fontSize: fontSizes.lg,
+      lineHeight: fontSizes.lg * 1.8,
+      fontFamily: 'System', // Ideally Serif
+    },
+    verseWrapper: {
+      // Inline wrapper
     },
     verseNumber: {
       fontSize: fontSizes.xs,
       color: '#D4AF37', // Gold
-      fontWeight: '700',
-      marginRight: Spacing.sm,
-      marginTop: 4,
-      minWidth: 24,
+      fontWeight: 'bold',
+      top: -4, // Superscript effect
     },
-    verseText: {
-      flex: 1,
-      fontSize: fontSizes.lg,
-      color: '#FFFFFF',
-      lineHeight: fontSizes.lg * 1.6,
-      fontWeight: '400',
-      fontFamily: 'System', // Ideally use a Serif font here
+    highlightedText: {
+      backgroundColor: 'rgba(212, 175, 55, 0.2)',
     },
     loadingContainer: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    navigationContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginTop: Spacing.xl,
+      paddingTop: Spacing.md,
+      borderTopWidth: 1,
+      borderTopColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    navButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: Spacing.sm,
+    },
+    navButtonText: {
+      color: '#D4AF37',
+      fontSize: fontSizes.base,
+      fontWeight: '600',
+      marginHorizontal: Spacing.xs,
     },
   });
 
@@ -132,38 +153,45 @@ export function BibleReader({
   return (
     <View style={styles.container}>
       <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
-        {verses.map((verse, index) => {
-          const isHighlighted = highlightedVerses.has(verse.verse);
-          const isBookmarked = bookmarkedVerses.has(verse.verse);
+        <View style={styles.pageContainer}>
+          <Text style={styles.chapterText}>
+            {verses.map((verse) => {
+              const isHighlighted = highlightedVerses.has(verse.verse);
 
-          return (
-            <Animated.View
-              key={verse.id}
-              entering={FadeInDown.delay(index * 50).springify().damping(12)}
-              layout={Layout.springify()}
-            >
-              <TouchableOpacity
-                onPress={() => onVersePress?.(verse.verse)}
-                activeOpacity={0.9}
-              >
-                <View
-                  style={[
-                    styles.verseContainer,
-                    isHighlighted && { backgroundColor: 'rgba(212, 175, 55, 0.2)', borderColor: '#D4AF37' },
-                    isBookmarked && { borderLeftWidth: 4, borderLeftColor: '#D4AF37' },
-                  ]}
+              return (
+                <Text
+                  key={verse.id}
+                  onPress={() => onVersePress?.(verse.verse)}
+                  style={isHighlighted ? styles.highlightedText : undefined}
                 >
-                  <View style={styles.verseRow}>
-                    {verseNumbersVisible && (
-                      <Text style={styles.verseNumber}>{verse.verse}</Text>
-                    )}
-                    <Text style={styles.verseText}>{verse.text}</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </Animated.View>
-          );
-        })}
+                  {verseNumbersVisible && (
+                    <Text style={styles.verseNumber}>{verse.verse} </Text>
+                  )}
+                  {verse.text}{' '}
+                </Text>
+              );
+            })}
+          </Text>
+
+          {/* Navigation Buttons */}
+          <View style={styles.navigationContainer}>
+            <TouchableOpacity
+              style={[styles.navButton, { opacity: onPreviousChapter ? 1 : 0.5 }]}
+              onPress={onPreviousChapter}
+              disabled={!onPreviousChapter}
+            >
+              <Text style={styles.navButtonText}>← Previous</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.navButton, { opacity: onNextChapter ? 1 : 0.5 }]}
+              onPress={onNextChapter}
+              disabled={!onNextChapter}
+            >
+              <Text style={styles.navButtonText}>Next →</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </ScrollView>
     </View>
   );
