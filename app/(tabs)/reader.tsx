@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { View, Modal, TouchableOpacity, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { useTheme } from '../../contexts/ThemeContext';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { BibleReader } from '../../components/BibleReader';
 import { BookSelector } from '../../components/BookSelector';
 import { ChapterSelector } from '../../components/ChapterSelector';
-import { TranslationSelector } from '../../components/TranslationSelector';
+import { TranslationSelector, TRANSLATIONS } from '../../components/TranslationSelector';
 import { BIBLE_BOOKS } from '../../constants/bibleBooks';
 import { ChevronDown, Volume2, Search, MoreHorizontal } from 'lucide-react-native';
 import { Button } from '../../components/ui/Button';
-import { TRANSLATIONS } from '../../components/TranslationSelector';
 
 export default function ReaderScreen() {
+  const router = useRouter();
   const { colors } = useTheme();
   const [bookId, setBookId] = useState(1);
   const [chapter, setChapter] = useState(1);
@@ -92,7 +93,7 @@ export default function ReaderScreen() {
             <TouchableOpacity>
               <Volume2 size={24} color="#FFFFFF" />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/search')}>
               <Search size={24} color="#FFFFFF" />
             </TouchableOpacity>
             <TouchableOpacity>
