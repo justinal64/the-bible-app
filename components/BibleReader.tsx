@@ -5,8 +5,6 @@ import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabase';
 import { BibleVerse } from '../types/bible';
 import { BOOK_ID_TO_CODE } from '../utils/bibleMapping';
-import { Spacing, BorderRadius } from '../constants/theme';
-import { Card } from './ui/Card';
 
 interface BibleReaderProps {
   bookId: number;
@@ -80,7 +78,11 @@ export function BibleReader({
   return (
     <View className="flex-1 bg-transparent">
       <ScrollView className="flex-1" contentContainerClassName="p-4 pb-24">
-        <View className="bg-galaxy-card/60 border border-white/10 rounded-2xl p-5 min-h-[400px]">
+        <Animated.View
+          entering={FadeInDown.duration(600).springify()}
+          layout={Layout.springify()}
+          className="bg-galaxy-card/60 border border-white/10 rounded-2xl p-5 min-h-[400px]"
+        >
           <Text className="text-lg leading-[1.8] font-system">
             {verses.map((verse) => {
               const isHighlighted = highlightedVerses.has(verse.verse);
@@ -118,7 +120,7 @@ export function BibleReader({
               <Text className="text-gold text-base font-semibold mx-1">Next →</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </Animated.View>
       </ScrollView>
     </View>
   );
