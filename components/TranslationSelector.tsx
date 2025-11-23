@@ -10,7 +10,7 @@ interface Translation {
   abbreviation: string;
 }
 
-const TRANSLATIONS: Translation[] = [
+export const TRANSLATIONS: Translation[] = [
   { id: 'de4e12af7f28f599-01', name: 'King James Version', abbreviation: 'KJV' },
   { id: '06125adad2d5898a-01', name: 'American Standard Version', abbreviation: 'ASV' },
   { id: '9879dbb7cfe39e4d-01', name: 'World English Bible', abbreviation: 'WEB' },
@@ -21,7 +21,7 @@ interface TranslationSelectorProps {
   onTranslationChange: (translationId: string) => void;
 }
 
-export function TranslationSelector({ selectedTranslationId, onTranslationChange }: TranslationSelectorProps) {
+export function TranslationSelector({ selectedTranslationId, onTranslationChange, children }: TranslationSelectorProps & { children?: React.ReactNode }) {
   const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -35,7 +35,7 @@ export function TranslationSelector({ selectedTranslationId, onTranslationChange
 
   const styles = StyleSheet.create({
     container: {
-      flex: 1,
+      // flex: 1, // Remove flex: 1 to allow natural width
     },
     button: {
       backgroundColor: colors.secondary,
@@ -64,18 +64,24 @@ export function TranslationSelector({ selectedTranslationId, onTranslationChange
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        activeOpacity={1}
-        style={styles.button}
-        onPress={() => setModalVisible(true)}
-        onPressIn={() => setIsPressed(true)}
-        onPressOut={() => setIsPressed(false)}
-      >
-        <Text style={styles.buttonText}>
-          {selectedTranslation.abbreviation}
-        </Text>
-        <ChevronDown size={18} color="#FFFFFF" />
-      </TouchableOpacity>
+      {children ? (
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
+          {children}
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          activeOpacity={1}
+          style={styles.button}
+          onPress={() => setModalVisible(true)}
+          onPressIn={() => setIsPressed(true)}
+          onPressOut={() => setIsPressed(false)}
+        >
+          <Text style={styles.buttonText}>
+            {selectedTranslation.abbreviation}
+          </Text>
+          <ChevronDown size={18} color="#FFFFFF" />
+        </TouchableOpacity>
+      )}
 
       <Modal
         animationType="fade"

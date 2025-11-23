@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
-import Animated, { FadeInDown, LinearTransition } from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useTheme } from '../contexts/ThemeContext';
 import { useBibleVerses } from '../hooks/useBibleVerses';
 
@@ -36,11 +36,13 @@ export function BibleReader({
   }
 
   return (
-    <View className="flex-1 bg-transparent">
-      <ScrollView className="flex-1" contentContainerClassName="p-4 pb-24">
+    <View style={{ flex: 1 }} className="bg-transparent">
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
+      >
         <Animated.View
           entering={FadeInDown.duration(600).springify()}
-          layout={LinearTransition.springify()}
           className="bg-galaxy-card/60 border border-white/10 rounded-2xl p-5 min-h-[400px]"
         >
           <Text className="text-lg leading-[1.8] font-system">

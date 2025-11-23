@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Modal } from 'react-native';
+import { View, Modal, TouchableOpacity, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../contexts/ThemeContext';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
@@ -8,8 +8,9 @@ import { BookSelector } from '../../components/BookSelector';
 import { ChapterSelector } from '../../components/ChapterSelector';
 import { TranslationSelector } from '../../components/TranslationSelector';
 import { BIBLE_BOOKS } from '../../constants/bibleBooks';
-import { ChevronDown } from 'lucide-react-native';
+import { ChevronDown, Volume2, Search, MoreHorizontal } from 'lucide-react-native';
 import { Button } from '../../components/ui/Button';
+import { TRANSLATIONS } from '../../components/TranslationSelector';
 
 export default function ReaderScreen() {
   const { colors } = useTheme();
@@ -20,6 +21,7 @@ export default function ReaderScreen() {
   const [showChapterSelector, setShowChapterSelector] = useState(false);
 
   const currentBook = BIBLE_BOOKS.find(b => b.id === bookId);
+  const selectedTranslation = TRANSLATIONS.find(t => t.id === translationId) || TRANSLATIONS[0];
 
   const handleBookSelect = (newBookId: number) => {
     setBookId(newBookId);
@@ -57,31 +59,45 @@ export default function ReaderScreen() {
 
   return (
     <GalaxyBackground>
-      <SafeAreaView className="flex-1" edges={['top']}>
-        <View className="px-4 py-2">
-          <View className="flex-row gap-2">
-            <View className="flex-1">
-              <TranslationSelector
-                selectedTranslationId={translationId}
-                onTranslationChange={setTranslationId}
-              />
-            </View>
-            <View className="flex-1">
-              <Button
-                title={currentBook?.name || 'Select Book'}
-                onPress={() => setShowBookSelector(true)}
-                variant="secondary"
-                icon={<ChevronDown size={18} color="#FFFFFF" />}
-              />
-            </View>
-            <View className="flex-1">
-              <Button
-                title={`Chapter ${chapter}`}
-                onPress={() => setShowChapterSelector(true)}
-                variant="secondary"
-                icon={<ChevronDown size={18} color="#FFFFFF" />}
-              />
-            </View>
+      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+        <View className="px-4 py-2 flex-row justify-between items-center">
+          {/* Segmented Control */}
+          <View className="flex-row bg-white/10 rounded-full items-center border border-white/10 overflow-hidden">
+            <TouchableOpacity
+              className="px-4 py-2 flex-row items-center"
+              onPress={() => setShowBookSelector(true)}
+            >
+              <Text className="text-white font-semibold text-base">
+                {currentBook?.name} {chapter}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Divider */}
+            <View className="w-[1px] h-5 bg-white/20" />
+
+            <TranslationSelector
+              selectedTranslationId={translationId}
+              onTranslationChange={setTranslationId}
+            >
+              <View className="px-4 py-2 flex-row items-center">
+                <Text className="text-white font-semibold text-base">
+                  {selectedTranslation.abbreviation}
+                </Text>
+              </View>
+            </TranslationSelector>
+          </View>
+
+          {/* Right Icons */}
+          <View className="flex-row gap-5 items-center">
+            <TouchableOpacity>
+              <Volume2 size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Search size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <MoreHorizontal size={24} color="#FFFFFF" />
+            </TouchableOpacity>
           </View>
         </View>
 
