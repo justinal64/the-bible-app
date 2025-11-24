@@ -6,10 +6,9 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { BibleReader } from '../../components/BibleReader';
 import { BookSelector } from '../../components/BookSelector';
-import { ChapterSelector } from '../../components/ChapterSelector';
 import { TranslationSelector, TRANSLATIONS } from '../../components/TranslationSelector';
 import { BIBLE_BOOKS } from '../../constants/bibleBooks';
-import { ChevronDown, Volume2, Search, MoreHorizontal } from 'lucide-react-native';
+import { Volume2, Search, MoreHorizontal } from 'lucide-react-native';
 import { Button } from '../../components/ui/Button';
 
 export default function ReaderScreen() {
@@ -19,20 +18,14 @@ export default function ReaderScreen() {
   const [chapter, setChapter] = useState(1);
   const [translationId, setTranslationId] = useState('de4e12af7f28f599-01'); // KJV
   const [showBookSelector, setShowBookSelector] = useState(false);
-  const [showChapterSelector, setShowChapterSelector] = useState(false);
 
   const currentBook = BIBLE_BOOKS.find(b => b.id === bookId);
   const selectedTranslation = TRANSLATIONS.find(t => t.id === translationId) || TRANSLATIONS[0];
 
-  const handleBookSelect = (newBookId: number) => {
+  const handleSelection = (newBookId: number, newChapter: number) => {
     setBookId(newBookId);
-    setChapter(1);
-    setShowBookSelector(false);
-  };
-
-  const handleChapterSelect = (newChapter: number) => {
     setChapter(newChapter);
-    setShowChapterSelector(false);
+    setShowBookSelector(false);
   };
 
   const handleNextChapter = () => {
@@ -121,25 +114,8 @@ export default function ReaderScreen() {
               <Button title="Close" onPress={() => setShowBookSelector(false)} variant="ghost" size="sm" />
             </View>
             <BookSelector
-              onSelectBook={handleBookSelect}
+              onSelect={handleSelection}
               currentBookId={bookId}
-            />
-          </SafeAreaView>
-        </Modal>
-
-        <Modal
-          visible={showChapterSelector}
-          animationType="slide"
-          presentationStyle="pageSheet"
-        >
-          <SafeAreaView className="flex-1 bg-galaxy-bg" edges={['top']}>
-            <View className="p-4 flex-row justify-end">
-              <Button title="Close" onPress={() => setShowChapterSelector(false)} variant="ghost" size="sm" />
-            </View>
-            <ChapterSelector
-              totalChapters={currentBook?.chapterCount || 1}
-              currentChapter={chapter}
-              onSelectChapter={handleChapterSelect}
             />
           </SafeAreaView>
         </Modal>

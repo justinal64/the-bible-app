@@ -1,110 +1,104 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { useTheme } from '../contexts/ThemeContext';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { BIBLE_BOOKS } from '../constants/bibleBooks';
-import { Spacing, BorderRadius } from '../constants/theme';
 import { Button } from './ui/Button';
-import { Card } from './ui/Card';
+import { ChevronLeft } from 'lucide-react-native';
 
 interface BookSelectorProps {
-  onSelectBook: (bookId: number) => void;
+  onSelect: (bookId: number, chapter: number) => void;
   currentBookId?: number;
 }
 
-export function BookSelector({ onSelectBook, currentBookId }: BookSelectorProps) {
-  const { colors, fontSizes } = useTheme();
+export function BookSelector({ onSelect, currentBookId }: BookSelectorProps) {
   const [selectedTestament, setSelectedTestament] = useState<'Old Testament' | 'New Testament'>('Old Testament');
+  const [selectedBook, setSelectedBook] = useState<typeof BIBLE_BOOKS[0] | null>(null);
 
   const oldTestamentBooks = BIBLE_BOOKS.filter(b => b.testament === 'Old Testament');
   const newTestamentBooks = BIBLE_BOOKS.filter(b => b.testament === 'New Testament');
   const displayedBooks = selectedTestament === 'Old Testament' ? oldTestamentBooks : newTestamentBooks;
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    tabContainer: {
-      flexDirection: 'row',
-      padding: Spacing.md,
-      gap: Spacing.md,
-      backgroundColor: colors.background,
-    },
-    tabButton: {
-      flex: 1,
-    },
-    bookList: {
-      padding: Spacing.md,
-      paddingTop: 0,
-    },
-    bookItem: {
-      marginBottom: Spacing.sm,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    bookName: {
-      fontSize: fontSizes.base,
-      color: colors.text,
-      fontWeight: '700',
-    },
-    bookNameActive: {
-      color: '#FFFFFF',
-    },
-    chapterCount: {
-      fontSize: fontSizes.sm,
-      color: colors.textSecondary,
-      fontWeight: '600',
-    },
-    chapterCountActive: {
-      color: '#FFFFFF',
-      opacity: 0.9,
-    },
-  });
+  const handleBookPress = (book: typeof BIBLE_BOOKS[0]) => {
+    setSelectedBook(book);
+  };
+
+  const handleChapterPress = (chapter: number) => {
+    if (selectedBook) {
+      onSelect(selectedBook.id, chapter);
+    }
+  };
+
+  const handleBack = () => {
+    setSelectedBook(null);
+  };
+
+  if (selectedBook) {
+    return (
+      <View className="flex-1 bg-transparent">
+        <View className="flex-row items-center p-4 border-b border-white/10">
+          <TouchableOpacity onPress={handleBack} className="mr-4">
+            <ChevronLeft size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+          <Text className="text-white text-xl font-bold">{selectedBook.name}</Text>
+        </View>
+
+        <ScrollView contentContainerClassName="p-4 pb-8">
+          <View className="flex-row flex-wrap gap-3 justify-center">
+            {Array.from({ length: selectedBook.chapterCount }, (_, i) => i + 1).map((chapter) => (
+              <TouchableOpacity
+                key={chapter}
+                onPress={() => handleChapterPress(chapter)}
+                className="w-16 h-16 justify-center items-center rounded-xl bg-galaxy-card/60 border border-white/10 active:bg-gold/20 active:border-gold/50"
+              >
+                <Text className="text-white text-lg font-semibold">{chapter}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.tabContainer}>
-        <View style={styles.tabButton}>
+    <View className="flex-1 bg-transparent">
+      <View className="flex-row p-4 gap-4">
+        <View className="flex-1">
           <Button
             title="Old Testament"
             onPress={() => setSelectedTestament('Old Testament')}
-            variant={selectedTestament === 'Old Testament' ? 'primary' : 'outline'}
+            variant={selectedTestament === 'Old Testament' ? 'primary' : 'ghost'}
             size="sm"
           />
         </View>
-        <View style={styles.tabButton}>
+        <View className="flex-1">
           <Button
             title="New Testament"
             onPress={() => setSelectedTestament('New Testament')}
-            variant={selectedTestament === 'New Testament' ? 'primary' : 'outline'}
+            variant={selectedTestament === 'New Testament' ? 'primary' : 'ghost'}
             size="sm"
           />
         </View>
       </View>
-      <ScrollView contentContainerStyle={styles.bookList}>
+
+      <ScrollView contentContainerClassName="p-4 pt-0 pb-8">
         {displayedBooks.map((book) => {
           const isActive = currentBookId === book.id;
           return (
             <TouchableOpacity
               key={book.id}
-              onPress={() => onSelectBook(book.id)}
+              onPress={() => handleBookPress(book)}
               activeOpacity={0.7}
+              className={`mb-3 flex-row justify-between items-center p-4 rounded-xl border ${
+                isActive
+                  ? 'bg-gold/20 border-gold/50'
+                  : 'bg-galaxy-card/60 border-white/10'
+              }`}
             >
-              <Card
-                style={[
-                  styles.bookItem,
-                  isActive && { backgroundColor: colors.secondary, borderColor: colors.secondaryDark },
-                ]}
-                padding="md"
-              >
-                <Text style={[styles.bookName, isActive && styles.bookNameActive]}>
-                  {book.name}
-                </Text>
-                <Text style={[styles.chapterCount, isActive && styles.chapterCountActive]}>
-                  {book.chapterCount} chapters
-                </Text>
-              </Card>
+              <Text className={`text-base font-bold ${isActive ? 'text-white' : 'text-gray-200'}`}>
+                {book.name}
+              </Text>
+              <Text className={`text-sm font-semibold ${isActive ? 'text-gold' : 'text-gray-400'}`}>
+                {book.chapterCount} chapters
+              </Text>
             </TouchableOpacity>
           );
         })}

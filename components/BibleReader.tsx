@@ -36,9 +36,9 @@ export function BibleReader({
   }
 
   return (
-    <View style={{ flex: 1 }} className="bg-transparent">
+    <View className="bg-transparent flex-1">
       <ScrollView
-        style={{ flex: 1 }}
+      className="flex-1"
         contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
       >
         <Animated.View
