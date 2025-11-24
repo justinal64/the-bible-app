@@ -1,5 +1,5 @@
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
-// import Animated, { FadeInDown } from 'react-native-reanimated';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import { useBibleVerses } from '../hooks/useBibleVerses';
 
@@ -27,6 +27,33 @@ export function BibleReader({
   const { colors, fontSizes, lineSpacingValue, verseNumbersVisible } = useTheme();
   const { verses, loading } = useBibleVerses({ bookId, chapter, translationId });
 
+  // Animation values
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(20)).current;
+
+  useEffect(() => {
+    if (!loading) {
+      // Reset values
+      fadeAnim.setValue(0);
+      translateY.setValue(20);
+
+      // Run animation
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.spring(translateY, {
+          toValue: 0,
+          friction: 8,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  }, [loading, chapter, bookId]);
+
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center">
@@ -38,11 +65,14 @@ export function BibleReader({
   return (
     <View className="bg-transparent flex-1">
       <ScrollView
-      className="flex-1"
+        className="flex-1"
         contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
       >
-        <View
-          // entering={FadeInDown.duration(600).springify()}
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            transform: [{ translateY }],
+          }}
           className="bg-galaxy-card/60 border border-white/10 rounded-2xl p-5 min-h-[400px]"
         >
           <Text className="text-lg leading-[1.8] font-system">
@@ -82,7 +112,7 @@ export function BibleReader({
               <Text className="text-gold text-base font-semibold mx-1">Next →</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </Animated.View>
       </ScrollView>
     </View>
   );
