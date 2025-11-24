@@ -5,7 +5,12 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A0A1A"
+    },
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true

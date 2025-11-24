@@ -51,7 +51,7 @@ export default function DashboardScreen() {
               />
               <View className="absolute inset-0 bg-black/40" />
               <View className="flex-1 justify-end p-6">
-                <Text className="text-xl font-serif italic mb-2 text-text-primary">
+                <Text className="text-xl font-serif italic mb-2 text-white">
                   "In the beginning God created the heaven and the earth."
                 </Text>
                 <Text className="font-bold text-gold">Genesis 1:1</Text>
