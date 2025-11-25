@@ -6,9 +6,12 @@ import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { ChevronRight, BookOpen, Search, Settings, Bookmark } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
+import { useAuth } from '../../contexts/AuthContext';
+import { UserAvatar } from '../../components/UserAvatar';
 
 export default function DashboardScreen() {
   const { colors } = useTheme();
+  const { user } = useAuth();
   const router = useRouter();
 
   const QuickAccessItem = ({ icon, label, onPress }: { icon: React.ReactNode, label: string, onPress: () => void }) => (
@@ -31,9 +34,13 @@ export default function DashboardScreen() {
               <Text className="text-2xl font-bold text-text-primary">Home Dashboard</Text>
             </View>
             <TouchableOpacity onPress={() => router.push('/settings')}>
-              <GlassCard style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center', borderRadius: 20 }}>
-                <Settings size={20} color="#D4AF37" />
-              </GlassCard>
+              {user ? (
+                <UserAvatar />
+              ) : (
+                <GlassCard style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center', borderRadius: 20 }}>
+                  <Settings size={20} color="#D4AF37" />
+                </GlassCard>
+              )}
             </TouchableOpacity>
           </View>
 

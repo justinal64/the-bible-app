@@ -2,9 +2,13 @@ import React from 'react';
 import { View, Text, ScrollView, Switch, TouchableOpacity, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { GlassCard } from '../../components/ui/GlassCard';
-import { Moon, Type, Bell, ChevronRight, User, Shield } from 'lucide-react-native';
+import { LoginModal } from '../../components/LoginModal';
+import { EditProfileModal } from '../../components/EditProfileModal';
+import { UserAvatar } from '../../components/UserAvatar';
+import { Moon, Type, Bell, ChevronRight, User, Shield, LogOut } from 'lucide-react-native';
 
 export default function SettingsScreen() {
   const SettingItem = ({ icon, label, value, type = 'toggle' }: any) => (
@@ -28,13 +32,19 @@ export default function SettingsScreen() {
   );
 
   const [showTextSettings, setShowTextSettings] = React.useState(false);
+  const [showLoginModal, setShowLoginModal] = React.useState(false);
+  const [showEditProfileModal, setShowEditProfileModal] = React.useState(false);
   const { fontSize, setFontSize } = useTheme();
+  const { user, signOut } = useAuth();
 
   return (
     <GalaxyBackground>
       <SafeAreaView className="flex-1" edges={['top']}>
         <ScrollView contentContainerClassName="p-5">
-          <Text className="text-2xl font-bold mb-8 text-text-primary">Settings</Text>
+          <View className="flex-row justify-between items-center mb-8">
+            <Text className="text-2xl font-bold text-text-primary">Settings</Text>
+            {user && <UserAvatar />}
+          </View>
 
           <GlassCard style={{ marginBottom: 24, padding: 0 }}>
             <View className="p-4">
@@ -75,11 +85,54 @@ export default function SettingsScreen() {
           <GlassCard style={{ marginBottom: 24, padding: 0 }}>
             <View className="p-4">
               <Text className="text-xs font-bold uppercase mb-2 text-gold">Account</Text>
-              <SettingItem
-                icon={<User size={18} color="#FFF" />}
-                label="Profile"
-                type="link"
-              />
+
+              {user ? (
+                <>
+                  <TouchableOpacity onPress={() => setShowEditProfileModal(true)}>
+                    <View className="flex-row items-center justify-between py-4 border-b border-gray-800">
+                      <View className="flex-row items-center">
+                        <View className="w-8 h-8 items-center justify-center rounded-full bg-gray-800 mr-3">
+                          <User size={18} color="#FFF" />
+                        </View>
+                        <View>
+                          <Text className="text-base text-text-primary">
+                            {user.user_metadata?.first_name && user.user_metadata?.last_name
+                              ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
+                              : 'Profile (Tap to edit)'}
+                          </Text>
+                          <Text className="text-xs text-gray-400">{user.email}</Text>
+                        </View>
+                      </View>
+                      <ChevronRight size={20} color="#666" />
+                    </View>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity onPress={signOut}>
+                    <View className="flex-row items-center justify-between py-4 border-b border-gray-800">
+                      <View className="flex-row items-center">
+                        <View className="w-8 h-8 items-center justify-center rounded-full bg-gray-800 mr-3">
+                          <LogOut size={18} color="#FFF" />
+                        </View>
+                        <Text className="text-base text-red-400">Sign Out</Text>
+                      </View>
+                      <ChevronRight size={20} color="#666" />
+                    </View>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <TouchableOpacity onPress={() => setShowLoginModal(true)}>
+                  <View className="flex-row items-center justify-between py-4 border-b border-gray-800">
+                    <View className="flex-row items-center">
+                      <View className="w-8 h-8 items-center justify-center rounded-full bg-gray-800 mr-3">
+                        <User size={18} color="#FFF" />
+                      </View>
+                      <Text className="text-base text-text-primary">Login / Sign Up</Text>
+                    </View>
+                    <ChevronRight size={20} color="#666" />
+                  </View>
+                </TouchableOpacity>
+              )}
+
               <SettingItem
                 icon={<Shield size={18} color="#FFF" />}
                 label="Privacy Policy"
@@ -130,6 +183,14 @@ export default function SettingsScreen() {
             </TouchableOpacity>
           </TouchableOpacity>
         </Modal>
+        <LoginModal
+          visible={showLoginModal}
+          onClose={() => setShowLoginModal(false)}
+        />
+        <EditProfileModal
+          visible={showEditProfileModal}
+          onClose={() => setShowEditProfileModal(false)}
+        />
       </SafeAreaView>
     </GalaxyBackground>
   );

@@ -3,14 +3,31 @@ import { View, Text, TextInput, ScrollView, TouchableOpacity } from 'react-nativ
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { GlassCard } from '../../components/ui/GlassCard';
-import { Search as SearchIcon, Clock, ArrowRight } from 'lucide-react-native';
+import { Search as SearchIcon, Clock, ArrowRight, Settings } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
+import { useAuth } from '../../contexts/AuthContext';
+import { UserAvatar } from '../../components/UserAvatar';
 
 export default function SearchScreen() {
+  const router = useRouter();
+  const { user } = useAuth();
+
   return (
     <GalaxyBackground>
       <SafeAreaView className="flex-1" edges={['top']}>
         <View className="px-4 py-4">
-          <Text className="text-2xl font-bold mb-6 text-text-primary">Search</Text>
+          <View className="flex-row justify-between items-center mb-6">
+            <Text className="text-2xl font-bold text-text-primary">Search</Text>
+            <TouchableOpacity onPress={() => router.push('/settings')}>
+              {user ? (
+                <UserAvatar />
+              ) : (
+                <GlassCard style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center', borderRadius: 20 }}>
+                  <Settings size={20} color="#D4AF37" />
+                </GlassCard>
+              )}
+            </TouchableOpacity>
+          </View>
 
           {/* Search Bar */}
           <GlassCard style={{ flexDirection: 'row', alignItems: 'center', padding: 12, borderRadius: 12, marginBottom: 24 }}>

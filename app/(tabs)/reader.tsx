@@ -8,12 +8,15 @@ import { BibleReader } from '../../components/BibleReader';
 import { BookSelector } from '../../components/BookSelector';
 import { TranslationSelector, TRANSLATIONS } from '../../components/TranslationSelector';
 import { BIBLE_BOOKS } from '../../constants/bibleBooks';
-import { Volume2, Search, Type } from 'lucide-react-native';
+import { Volume2, Search, Type, Settings } from 'lucide-react-native';
 import { Button } from '../../components/ui/Button';
+import { useAuth } from '../../contexts/AuthContext';
+import { UserAvatar } from '../../components/UserAvatar';
 
 export default function ReaderScreen() {
   const router = useRouter();
   const { colors, fontSize, setFontSize } = useTheme();
+  const { user } = useAuth();
   const [bookId, setBookId] = useState(1);
   const [chapter, setChapter] = useState(1);
   const [translationId, setTranslationId] = useState('de4e12af7f28f599-01'); // KJV
@@ -89,6 +92,13 @@ export default function ReaderScreen() {
             </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push('/search')}>
               <Search size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/settings')}>
+              {user ? (
+                <UserAvatar />
+              ) : (
+                <Settings size={24} color="#FFFFFF" />
+              )}
             </TouchableOpacity>
 
           </View>

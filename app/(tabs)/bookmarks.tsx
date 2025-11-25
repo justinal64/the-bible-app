@@ -7,10 +7,15 @@ import { BookmarksList } from '../../components/BookmarksList';
 import { NotesList } from '../../components/NotesList';
 import { UserBookmark, UserNote } from '../../types/bible';
 import { Spacing, BorderRadius } from '../../constants/theme';
+import { Settings } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
+import { UserAvatar } from '../../components/UserAvatar';
+import { GlassCard } from '../../components/ui/GlassCard';
 
 export default function BookmarksScreen() {
   const { colors, fontSizes } = useTheme();
   const { user } = useAuth();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<'bookmarks' | 'notes'>('bookmarks');
   const [bookmarks] = useState<UserBookmark[]>([]);
   const [notes] = useState<UserNote[]>([]);
@@ -43,11 +48,16 @@ export default function BookmarksScreen() {
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
     },
+    headerTop: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: Spacing.md,
+    },
     title: {
       fontSize: fontSizes['2xl'],
       color: colors.text,
       fontWeight: '700',
-      marginBottom: Spacing.md,
     },
     tabContainer: {
       flexDirection: 'row',
@@ -106,13 +116,20 @@ export default function BookmarksScreen() {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.header}>
-          <Text style={styles.title}>Bookmarks & Notes</Text>
+          <View style={styles.headerTop}>
+            <Text style={styles.title}>Bookmarks & Notes</Text>
+            <TouchableOpacity onPress={() => router.push('/settings')}>
+              <GlassCard style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center', borderRadius: 20 }}>
+                <Settings size={20} color="#D4AF37" />
+              </GlassCard>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.authPrompt}>
           <Text style={styles.authPromptText}>
             Sign in to save bookmarks and create notes
           </Text>
-          <TouchableOpacity style={styles.signInButton}>
+          <TouchableOpacity style={styles.signInButton} onPress={() => router.push('/settings')}>
             <Text style={styles.signInButtonText}>Sign In</Text>
           </TouchableOpacity>
         </View>
@@ -123,7 +140,12 @@ export default function BookmarksScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.title}>Bookmarks & Notes</Text>
+        <View style={styles.headerTop}>
+          <Text style={styles.title}>Bookmarks & Notes</Text>
+          <TouchableOpacity onPress={() => router.push('/settings')}>
+            <UserAvatar />
+          </TouchableOpacity>
+        </View>
         <View style={styles.tabContainer}>
           <TouchableOpacity
             style={[styles.tab, activeTab === 'bookmarks' && styles.tabActive]}

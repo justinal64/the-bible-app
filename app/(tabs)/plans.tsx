@@ -6,9 +6,16 @@ import { ReadingPlanCard } from '../../components/ReadingPlanCard';
 import { DevotionalCard } from '../../components/DevotionalCard';
 import { ReadingPlan, Devotional } from '../../types/bible';
 import { Spacing, BorderRadius } from '../../constants/theme';
+import { Settings } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
+import { useAuth } from '../../contexts/AuthContext';
+import { UserAvatar } from '../../components/UserAvatar';
+import { GlassCard } from '../../components/ui/GlassCard';
 
 export default function PlansScreen() {
   const { colors, fontSizes } = useTheme();
+  const { user } = useAuth();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<'plans' | 'devotionals'>('plans');
 
   const mockPlans: ReadingPlan[] = [
@@ -57,11 +64,16 @@ export default function PlansScreen() {
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
     },
+    headerTop: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: Spacing.md,
+    },
     title: {
       fontSize: fontSizes['2xl'],
       color: colors.text,
       fontWeight: '700',
-      marginBottom: Spacing.md,
     },
     tabContainer: {
       flexDirection: 'row',
@@ -104,7 +116,18 @@ export default function PlansScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.title}>Reading Plans</Text>
+        <View style={styles.headerTop}>
+          <Text style={styles.title}>Reading Plans</Text>
+          <TouchableOpacity onPress={() => router.push('/settings')}>
+            {user ? (
+              <UserAvatar />
+            ) : (
+              <GlassCard style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center', borderRadius: 20 }}>
+                <Settings size={20} color="#D4AF37" />
+              </GlassCard>
+            )}
+          </TouchableOpacity>
+        </View>
         <View style={styles.tabContainer}>
           <TouchableOpacity
             style={[styles.tab, activeTab === 'plans' && styles.tabActive]}
