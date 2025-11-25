@@ -8,7 +8,7 @@ import { BibleReader } from '../../components/BibleReader';
 import { BookSelector } from '../../components/BookSelector';
 import { TranslationSelector, TRANSLATIONS } from '../../components/TranslationSelector';
 import { BIBLE_BOOKS } from '../../constants/bibleBooks';
-import { Volume2, Search, MoreHorizontal, Type } from 'lucide-react-native';
+import { Volume2, Search, Type } from 'lucide-react-native';
 import { Button } from '../../components/ui/Button';
 
 export default function ReaderScreen() {
@@ -90,9 +90,7 @@ export default function ReaderScreen() {
             <TouchableOpacity onPress={() => router.push('/search')}>
               <Search size={24} color="#FFFFFF" />
             </TouchableOpacity>
-            <TouchableOpacity>
-              <MoreHorizontal size={24} color="#FFFFFF" />
-            </TouchableOpacity>
+
           </View>
         </View>
 
