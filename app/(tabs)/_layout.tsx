@@ -13,23 +13,11 @@ export default function TabLayout() {
         tabBarActiveTintColor: '#D4AF37', // Gold
         tabBarInactiveTintColor: '#A0A0B0',
         tabBarStyle: {
-          position: 'absolute',
-          bottom: 0,
-          left: 20,
-          right: 20,
           backgroundColor: '#1A1A2E',
-          borderRadius: 25,
-          height: 60,
-          borderTopWidth: 0,
-          paddingBottom: 0, // Center icons vertically
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 10,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.5,
-          elevation: 5,
+          borderTopWidth: 1,
+          borderTopColor: 'rgba(255, 255, 255, 0.1)',
+          height: 85,
+          paddingTop: 10,
         },
         tabBarBackground: () => (
           <View style={{ flex: 1, backgroundColor: 'transparent' }} />
