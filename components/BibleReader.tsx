@@ -85,10 +85,16 @@ export function BibleReader({
                 <Text
                   key={verse.id}
                   onPress={() => onVersePress?.(verse.verse)}
+                  style={{ fontSize: fontSizes.base, lineHeight: fontSizes.base * lineSpacingValue }}
                   className={`text-text-primary ${isHighlighted ? "bg-gold/20" : ""}`}
                 >
                   {verseNumbersVisible && (
-                    <Text className="text-xs font-bold -top-1 !text-gold">{verse.verse} </Text>
+                    <Text
+                      style={{ fontSize: fontSizes.sm }}
+                      className="font-bold -top-1 !text-gold"
+                    >
+                      {verse.verse}{' '}
+                    </Text>
                   )}
                   {verse.text}{' '}
                 </Text>
