@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
+import { ChevronLeft, ChevronRight } from 'lucide-react-native';
+import { GlassCard } from './ui/GlassCard';
 import { useTheme } from '../contexts/ThemeContext';
 import { useBibleVerses } from '../hooks/useBibleVerses';
 
@@ -63,7 +65,7 @@ export function BibleReader({
   }
 
   return (
-    <View className="bg-transparent flex-1">
+    <View className="bg-transparent flex-1 relative">
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
@@ -93,27 +95,27 @@ export function BibleReader({
               );
             })}
           </Text>
-
-          {/* Navigation Buttons */}
-          <View className="flex-row justify-between mt-8 pt-4 border-t border-white/10">
-            <TouchableOpacity
-              className={`flex-row items-center p-2 ${!onPreviousChapter ? 'opacity-50' : ''}`}
-              onPress={onPreviousChapter}
-              disabled={!onPreviousChapter}
-            >
-              <Text className="text-gold text-base font-semibold mx-1">← Previous</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              className={`flex-row items-center p-2 ${!onNextChapter ? 'opacity-50' : ''}`}
-              onPress={onNextChapter}
-              disabled={!onNextChapter}
-            >
-              <Text className="text-gold text-base font-semibold mx-1">Next →</Text>
-            </TouchableOpacity>
-          </View>
         </Animated.View>
       </ScrollView>
+
+      {/* Floating Navigation Buttons */}
+      <View className="absolute bottom-6 left-0 right-0 flex-row justify-between px-6" pointerEvents="box-none">
+        {onPreviousChapter ? (
+          <TouchableOpacity onPress={onPreviousChapter}>
+            <GlassCard style={{ width: 50, height: 50, borderRadius: 25, alignItems: 'center', justifyContent: 'center' }}>
+              <ChevronLeft size={24} color="#D4AF37" />
+            </GlassCard>
+          </TouchableOpacity>
+        ) : <View />}
+
+        {onNextChapter ? (
+          <TouchableOpacity onPress={onNextChapter}>
+            <GlassCard style={{ width: 50, height: 50, borderRadius: 25, alignItems: 'center', justifyContent: 'center' }}>
+              <ChevronRight size={24} color="#D4AF37" />
+            </GlassCard>
+          </TouchableOpacity>
+        ) : <View />}
+      </View>
     </View>
   );
 }
