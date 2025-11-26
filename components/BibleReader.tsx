@@ -56,6 +56,15 @@ export function BibleReader({
     }
   }, [loading, chapter, bookId]);
 
+  const [scrollProgress, setScrollProgress] = React.useState(0);
+
+  const handleScroll = (event: any) => {
+    const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
+    const paddingToBottom = 20;
+    const progress = contentOffset.y / (contentSize.height - layoutMeasurement.height - paddingToBottom);
+    setScrollProgress(Math.min(Math.max(progress, 0), 1));
+  };
+
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center">
@@ -66,9 +75,19 @@ export function BibleReader({
 
   return (
     <View className="bg-transparent flex-1 relative">
+      {/* Progress Bar */}
+      <View className="absolute top-0 left-0 right-0 h-1 bg-white/10 z-10">
+        <View
+          className="h-full bg-gold"
+          style={{ width: `${scrollProgress * 100}%` }}
+        />
+      </View>
+
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ padding: 16, paddingBottom: 75 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 75, paddingTop: 20 }}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
       >
         <Animated.View
           style={{
