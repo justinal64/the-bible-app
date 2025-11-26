@@ -14,6 +14,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { UserAvatar } from '../../components/UserAvatar';
 
 import * as Speech from 'expo-speech';
+import { Audio } from 'expo-av';
 import { useBibleVerses } from '../../hooks/useBibleVerses';
 
 export default function ReaderScreen() {
@@ -34,8 +35,21 @@ export default function ReaderScreen() {
   const selectedTranslation = TRANSLATIONS.find(t => t.id === translationId) || TRANSLATIONS[0];
 
   React.useEffect(() => {
+    configureAudio();
     loadBestVoice();
   }, []);
+
+  const configureAudio = async () => {
+    try {
+      await Audio.setAudioModeAsync({
+        playsInSilentModeIOS: true,
+        staysActiveInBackground: false,
+        shouldDuckAndroid: true,
+      });
+    } catch (e) {
+      console.log('Error configuring audio:', e);
+    }
+  };
 
   const loadBestVoice = async () => {
     try {
