@@ -1,7 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle, StyleProp } from 'react-native';
-import { useTheme } from '../../contexts/ThemeContext';
-import { Spacing, BorderRadius } from '../../constants/theme';
+import { View, ViewStyle, StyleProp } from 'react-native';
 
 interface CardProps {
   children: React.ReactNode;
@@ -11,33 +9,16 @@ interface CardProps {
 }
 
 export function Card({ children, style, variant = 'default', padding = 'md' }: CardProps) {
-  const { colors } = useTheme();
+  const getContainerClasses = () => {
+    const classes = ['bg-galaxy-card', 'rounded-xl', 'border-2', 'border-white/10', 'border-b-4'];
 
-  const getPadding = () => {
-    switch (padding) {
-      case 'none':
-        return 0;
-      case 'sm':
-        return Spacing.sm;
-      case 'md':
-        return Spacing.md;
-      case 'lg':
-        return Spacing.lg;
-      default:
-        return Spacing.md;
-    }
+    // Padding
+    if (padding === 'sm') classes.push('p-2');
+    if (padding === 'md') classes.push('p-4');
+    if (padding === 'lg') classes.push('p-6');
+
+    return classes.join(' ');
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      backgroundColor: colors.surface,
-      borderRadius: BorderRadius.xl,
-      borderWidth: 2,
-      borderColor: colors.border,
-      borderBottomWidth: 4,
-      padding: getPadding(),
-    },
-  });
-
-  return <View style={[styles.container, style]}>{children}</View>;
+  return <View className={getContainerClasses()} style={style}>{children}</View>;
 }

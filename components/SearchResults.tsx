@@ -1,9 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import { BibleVerse } from '../types/bible';
 import { BIBLE_BOOKS } from '../constants/bibleBooks';
-import { Spacing, BorderRadius } from '../constants/theme';
 
 interface SearchResult extends BibleVerse {
   bookName: string;
@@ -17,63 +16,28 @@ interface SearchResultsProps {
 export function SearchResults({ results, onResultPress }: SearchResultsProps) {
   const { colors, fontSizes } = useTheme();
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    resultItem: {
-      padding: Spacing.md,
-      backgroundColor: colors.surface,
-      borderRadius: BorderRadius.md,
-      marginBottom: Spacing.sm,
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-    reference: {
-      fontSize: fontSizes.sm,
-      color: colors.primary,
-      fontWeight: '600',
-      marginBottom: Spacing.xs,
-    },
-    verseText: {
-      fontSize: fontSizes.base,
-      color: colors.text,
-      lineHeight: fontSizes.base * 1.5,
-    },
-    emptyContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingVertical: Spacing['2xl'],
-    },
-    emptyText: {
-      fontSize: fontSizes.base,
-      color: colors.textSecondary,
-    },
-  });
-
   if (results.length === 0) {
     return (
-      <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>No results found</Text>
+      <View className="flex-1 justify-center items-center py-8">
+        <Text className="text-base text-text-secondary">No results found</Text>
       </View>
     );
   }
 
   return (
     <FlatList
-      style={styles.container}
+      className="flex-1"
       data={results}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
         <TouchableOpacity
-          style={styles.resultItem}
+          className="p-4 bg-galaxy-card rounded-xl mb-2 border border-white/10"
           onPress={() => onResultPress(item.bookId, item.chapter, item.verse)}
         >
-          <Text style={styles.reference}>
+          <Text className="text-sm text-gold font-bold mb-1">
             {item.bookName} {item.chapter}:{item.verse}
           </Text>
-          <Text style={styles.verseText}>{item.text}</Text>
+          <Text className="text-base text-white leading-6">{item.text}</Text>
         </TouchableOpacity>
       )}
     />

@@ -1,7 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity, StyleSheet, ViewStyle, TextStyle, Animated, View } from 'react-native';
-import { useTheme } from '../../contexts/ThemeContext';
-import { Spacing, BorderRadius, FontSizes } from '../../constants/theme';
+import { Text, TouchableOpacity, ViewStyle, TextStyle, View } from 'react-native';
 
 interface ButtonProps {
   title: string;
@@ -24,115 +22,43 @@ export function Button({
   disabled = false,
   icon,
 }: ButtonProps) {
-  const { colors } = useTheme();
   const [isPressed, setIsPressed] = React.useState(false);
 
-  const getBackgroundColor = () => {
-    if (disabled) return colors.textTertiary;
-    switch (variant) {
-      case 'primary':
-        return colors.primary;
-      case 'secondary':
-        return colors.secondary;
-      case 'danger':
-        return colors.error;
-      case 'outline':
-      case 'ghost':
-        return 'transparent';
-      default:
-        return colors.primary;
-    }
+  const getContainerClasses = () => {
+    const classes = ['flex-row', 'items-center', 'justify-center', 'rounded-xl'];
+
+    // Size
+    if (size === 'sm') classes.push('px-4 py-2');
+    if (size === 'md') classes.push('px-6 py-3');
+    if (size === 'lg') classes.push('px-8 py-4');
+
+    // Variant
+    if (variant === 'primary') classes.push('bg-gold border-b-4 border-gold-dark');
+    if (variant === 'secondary') classes.push('bg-galaxy-accent border-b-4 border-galaxy-card');
+    if (variant === 'danger') classes.push('bg-red-500 border-b-4 border-red-700');
+    if (variant === 'outline') classes.push('bg-transparent border-2 border-white/20 border-b-2');
+    if (variant === 'ghost') classes.push('bg-transparent');
+
+    if (disabled) classes.push('opacity-50');
+
+    return classes.join(' ');
   };
 
-  const getBorderColor = () => {
-    if (disabled) return colors.textTertiary;
-    switch (variant) {
-      case 'primary':
-        return colors.primaryDark;
-      case 'secondary':
-        return colors.secondaryDark;
-      case 'danger':
-        return '#D32F2F'; // Darker red
-      case 'outline':
-        return colors.border;
-      case 'ghost':
-        return 'transparent';
-      default:
-        return colors.primaryDark;
-    }
-  };
+  const getTextClasses = () => {
+    const classes = ['font-bold', 'uppercase', 'tracking-widest', 'text-center'];
 
-  const getTextColor = () => {
-    if (disabled) return '#FFFFFF';
-    switch (variant) {
-      case 'primary':
-      case 'secondary':
-      case 'danger':
-        return '#FFFFFF';
-      case 'outline':
-        return colors.textSecondary;
-      case 'ghost':
-        return colors.primary;
-      default:
-        return '#FFFFFF';
-    }
-  };
+    // Size
+    if (size === 'sm') classes.push('text-sm');
+    if (size === 'md') classes.push('text-base');
+    if (size === 'lg') classes.push('text-lg');
 
-  const getPadding = () => {
-    switch (size) {
-      case 'sm':
-        return { paddingVertical: Spacing.xs, paddingHorizontal: Spacing.md };
-      case 'md':
-        return { paddingVertical: Spacing.sm, paddingHorizontal: Spacing.lg };
-      case 'lg':
-        return { paddingVertical: Spacing.md, paddingHorizontal: Spacing.xl };
-      default:
-        return { paddingVertical: Spacing.sm, paddingHorizontal: Spacing.lg };
-    }
-  };
+    // Color
+    if (variant === 'outline') classes.push('text-text-secondary');
+    else if (variant === 'ghost') classes.push('text-gold');
+    else classes.push('text-white');
 
-  const getFontSize = () => {
-    switch (size) {
-      case 'sm':
-        return FontSizes.medium.sm;
-      case 'md':
-        return FontSizes.medium.base;
-      case 'lg':
-        return FontSizes.medium.lg;
-      default:
-        return FontSizes.medium.base;
-    }
+    return classes.join(' ');
   };
-
-  const styles = StyleSheet.create({
-    container: {
-      backgroundColor: getBackgroundColor(),
-      borderRadius: BorderRadius.xl,
-      borderWidth: variant === 'ghost' ? 0 : 2,
-      borderColor: variant === 'outline' ? colors.border : getBackgroundColor(),
-      borderBottomWidth: variant === 'ghost' || variant === 'outline' ? 2 : 4,
-      borderBottomColor: getBorderColor(),
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'row',
-      opacity: disabled ? 0.6 : 1,
-      transform: [{ translateY: isPressed ? 2 : 0 }],
-      ...getPadding(),
-      ...style,
-    },
-    text: {
-      color: getTextColor(),
-      fontSize: getFontSize(),
-      fontWeight: '700',
-      textTransform: 'uppercase',
-      letterSpacing: 1,
-      textAlign: 'center',
-      ...textStyle,
-    },
-    iconContainer: {
-      marginRight: Spacing.sm,
-    },
-  });
 
   return (
     <TouchableOpacity
@@ -141,10 +67,11 @@ export function Button({
       onPressIn={() => !disabled && setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
       disabled={disabled}
-      style={styles.container}
+      className={getContainerClasses()}
+      style={[{ transform: [{ translateY: isPressed ? 2 : 0 }] }, style]}
     >
-      {icon && <View style={styles.iconContainer}>{icon}</View>}
-      <Text style={styles.text}>{title}</Text>
+      {icon && <View className="mr-2">{icon}</View>}
+      <Text className={getTextClasses()} style={textStyle}>{title}</Text>
     </TouchableOpacity>
   );
 }

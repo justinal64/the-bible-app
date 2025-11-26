@@ -1,10 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import { UserBookmark } from '../types/bible';
 import { BIBLE_BOOKS } from '../constants/bibleBooks';
 import { Bookmark, Trash2 } from 'lucide-react-native';
-import { Spacing, BorderRadius } from '../constants/theme';
 
 interface BookmarksListProps {
   bookmarks: UserBookmark[];
@@ -23,94 +22,42 @@ export function BookmarksList({
     return BIBLE_BOOKS.find(b => b.id === bookId)?.name || '';
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    bookmarkItem: {
-      flexDirection: 'row',
-      padding: Spacing.md,
-      backgroundColor: colors.surface,
-      borderRadius: BorderRadius.md,
-      marginBottom: Spacing.sm,
-      borderWidth: 1,
-      borderColor: colors.border,
-      alignItems: 'center',
-    },
-    iconContainer: {
-      marginRight: Spacing.md,
-    },
-    contentContainer: {
-      flex: 1,
-    },
-    reference: {
-      fontSize: fontSizes.base,
-      color: colors.text,
-      fontWeight: '600',
-      marginBottom: Spacing.xs,
-    },
-    note: {
-      fontSize: fontSizes.sm,
-      color: colors.textSecondary,
-      marginTop: Spacing.xs,
-    },
-    date: {
-      fontSize: fontSizes.xs,
-      color: colors.textTertiary,
-    },
-    deleteButton: {
-      padding: Spacing.sm,
-      marginLeft: Spacing.sm,
-    },
-    emptyContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingVertical: Spacing['2xl'],
-    },
-    emptyText: {
-      fontSize: fontSizes.base,
-      color: colors.textSecondary,
-      textAlign: 'center',
-    },
-  });
-
   if (bookmarks.length === 0) {
     return (
-      <View style={styles.emptyContainer}>
-        <Bookmark size={48} color={colors.textTertiary} />
-        <Text style={styles.emptyText}>No bookmarks yet</Text>
+      <View className="flex-1 justify-center items-center py-8">
+        <Bookmark size={48} color="#666677" />
+        <Text className="text-base text-text-secondary text-center mt-4">No bookmarks yet</Text>
       </View>
     );
   }
 
   return (
     <FlatList
-      style={styles.container}
+      className="flex-1"
       data={bookmarks}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
-        <View style={styles.bookmarkItem}>
-          <View style={styles.iconContainer}>
-            <Bookmark size={20} color={colors.primary} fill={colors.primary} />
+        <View className="flex-row items-center p-4 bg-galaxy-card rounded-xl mb-2 border border-white/10">
+          <View className="mr-4">
+            <Bookmark size={20} color="#D4AF37" fill="#D4AF37" />
           </View>
           <TouchableOpacity
-            style={styles.contentContainer}
+            className="flex-1"
             onPress={() => onBookmarkPress(item)}
           >
-            <Text style={styles.reference}>
+            <Text className="text-base text-white font-bold mb-1">
               {getBookName(item.bookId)} {item.chapter}:{item.verse}
             </Text>
-            {item.note && <Text style={styles.note}>{item.note}</Text>}
-            <Text style={styles.date}>
+            {item.note && <Text className="text-sm text-text-secondary mt-1">{item.note}</Text>}
+            <Text className="text-xs text-text-tertiary mt-1">
               {new Date(item.createdAt).toLocaleDateString()}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.deleteButton}
+            className="p-2 ml-2"
             onPress={() => onDeleteBookmark(item.id)}
           >
-            <Trash2 size={18} color={colors.error} />
+            <Trash2 size={18} color="#FF4B4B" />
           </TouchableOpacity>
         </View>
       )}

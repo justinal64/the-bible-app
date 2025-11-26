@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Modal } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import { ChevronDown } from 'lucide-react-native';
-import { BorderRadius, Spacing, FontSizes } from '../constants/theme';
 
 interface Translation {
   id: string;
@@ -33,37 +32,8 @@ export function TranslationSelector({ selectedTranslationId, onTranslationChange
     setModalVisible(false);
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      // flex: 1, // Remove flex: 1 to allow natural width
-    },
-    button: {
-      backgroundColor: colors.secondary,
-      borderRadius: BorderRadius.xl,
-      borderWidth: 2,
-      borderColor: colors.secondary,
-      borderBottomWidth: 4,
-      borderBottomColor: colors.secondaryDark,
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'row',
-      paddingVertical: Spacing.sm,
-      paddingHorizontal: Spacing.lg,
-      transform: [{ translateY: isPressed ? 2 : 0 }],
-    },
-    buttonText: {
-      color: '#FFFFFF',
-      fontSize: FontSizes.medium.base,
-      fontWeight: '700',
-      textTransform: 'uppercase',
-      letterSpacing: 1,
-      textAlign: 'center',
-      flex: 1,
-    },
-  });
-
   return (
-    <View style={styles.container}>
+    <View>
       {children ? (
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           {children}
@@ -71,12 +41,13 @@ export function TranslationSelector({ selectedTranslationId, onTranslationChange
       ) : (
         <TouchableOpacity
           activeOpacity={1}
-          style={styles.button}
+          className="bg-galaxy-accent rounded-xl border-2 border-galaxy-accent border-b-4 border-b-galaxy-card flex-row items-center justify-center px-6 py-2"
+          style={{ transform: [{ translateY: isPressed ? 2 : 0 }] }}
           onPress={() => setModalVisible(true)}
           onPressIn={() => setIsPressed(true)}
           onPressOut={() => setIsPressed(false)}
         >
-          <Text style={styles.buttonText}>
+          <Text className="text-white text-base font-bold uppercase tracking-widest text-center flex-1">
             {selectedTranslation.abbreviation}
           </Text>
           <ChevronDown size={18} color="#FFFFFF" />
@@ -90,65 +61,34 @@ export function TranslationSelector({ selectedTranslationId, onTranslationChange
         onRequestClose={() => setModalVisible(false)}
       >
         <TouchableOpacity
-          style={{ flex: 1 }}
+          className="flex-1"
           activeOpacity={1}
           onPress={() => setModalVisible(false)}
         >
-          <View style={{
-            position: 'absolute',
-            top: 120, // Position below the header
-            left: Spacing.md,
-            right: Spacing.md,
-            backgroundColor: colors.surface,
-            borderRadius: BorderRadius.lg,
-            padding: Spacing.md,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 8,
-            elevation: 8,
-          }}>
-            <Text style={{
-              fontSize: FontSizes.medium.lg,
-              fontWeight: '700',
-              color: colors.text,
-              marginBottom: Spacing.md,
-            }}>
+          <View
+            className="absolute top-32 left-4 right-4 bg-galaxy-card rounded-xl p-4 shadow-lg shadow-black"
+            style={{ elevation: 8 }}
+          >
+            <Text className="text-lg font-bold text-white mb-4">
               Select Translation
             </Text>
 
             {TRANSLATIONS.map((item) => (
               <TouchableOpacity
                 key={item.id}
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  paddingVertical: Spacing.md,
-                  paddingHorizontal: Spacing.md,
-                  borderRadius: BorderRadius.md,
-                  backgroundColor: item.id === selectedTranslationId ? colors.primary + '20' : 'transparent',
-                  marginBottom: Spacing.xs,
-                }}
+                className={`flex-row justify-between items-center py-4 px-4 rounded-lg mb-1 ${item.id === selectedTranslationId ? 'bg-gold/20' : 'bg-transparent'}`}
                 onPress={() => handleSelect(item.id)}
               >
                 <View>
-                  <Text style={{
-                    fontSize: FontSizes.medium.base,
-                    fontWeight: '600',
-                    color: colors.text,
-                  }}>
+                  <Text className="text-base font-bold text-white">
                     {item.abbreviation}
                   </Text>
-                  <Text style={{
-                    fontSize: FontSizes.medium.sm,
-                    color: colors.textSecondary,
-                  }}>
+                  <Text className="text-sm text-text-secondary">
                     {item.name}
                   </Text>
                 </View>
                 {item.id === selectedTranslationId && (
-                  <Text style={{ fontSize: 20, color: colors.primary }}>✓</Text>
+                  <Text className="text-xl text-gold">✓</Text>
                 )}
               </TouchableOpacity>
             ))}

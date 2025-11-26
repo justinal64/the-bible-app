@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import { Search, X } from 'lucide-react-native';
-import { Spacing, BorderRadius } from '../constants/theme';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -23,43 +22,20 @@ export function SearchBar({ onSearch, placeholder = 'Search verses...' }: Search
     onSearch(text);
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: colors.surface,
-      borderRadius: BorderRadius.md,
-      paddingHorizontal: Spacing.md,
-      paddingVertical: Spacing.sm,
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-    input: {
-      flex: 1,
-      fontSize: fontSizes.base,
-      color: colors.text,
-      marginLeft: Spacing.sm,
-      marginRight: Spacing.sm,
-    },
-    iconButton: {
-      padding: Spacing.xs,
-    },
-  });
-
   return (
-    <View style={styles.container}>
-      <Search size={20} color={colors.textSecondary} />
+    <View className="flex-row items-center bg-galaxy-card rounded-xl px-4 py-2 border border-white/10">
+      <Search size={20} color="#A0A0B0" />
       <TextInput
-        style={styles.input}
+        className="flex-1 text-base text-white mx-2"
         value={query}
         onChangeText={handleSearch}
         placeholder={placeholder}
-        placeholderTextColor={colors.textTertiary}
+        placeholderTextColor="#666677"
         returnKeyType="search"
       />
       {query.length > 0 && (
-        <TouchableOpacity style={styles.iconButton} onPress={handleClear}>
-          <X size={20} color={colors.textSecondary} />
+        <TouchableOpacity className="p-1" onPress={handleClear}>
+          <X size={20} color="#A0A0B0" />
         </TouchableOpacity>
       )}
     </View>

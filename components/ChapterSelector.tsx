@@ -1,7 +1,5 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
-import { useTheme } from '../contexts/ThemeContext';
-import { Spacing } from '../constants/theme';
+import { View, ScrollView } from 'react-native';
 import { Button } from './ui/Button';
 
 interface ChapterSelectorProps {
@@ -15,31 +13,11 @@ export function ChapterSelector({
   currentChapter,
   onSelectChapter,
 }: ChapterSelectorProps) {
-  const { colors } = useTheme();
-
-  const styles = StyleSheet.create({
-    container: {
-      backgroundColor: colors.background,
-      paddingVertical: Spacing.md,
-    },
-    grid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      paddingHorizontal: Spacing.sm,
-      justifyContent: 'center',
-      gap: Spacing.sm,
-    },
-    chapterButtonWrapper: {
-      width: 60,
-      height: 60,
-    },
-  });
-
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.grid}>
+    <ScrollView className="bg-galaxy-bg py-4">
+      <View className="flex-row flex-wrap px-2 justify-center gap-2">
         {Array.from({ length: totalChapters }, (_, i) => i + 1).map((chapter) => (
-          <View key={chapter} style={styles.chapterButtonWrapper}>
+          <View key={chapter} className="w-16 h-16">
             <Button
               title={chapter.toString()}
               onPress={() => onSelectChapter(chapter)}

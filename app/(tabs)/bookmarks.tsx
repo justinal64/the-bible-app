@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { BookmarksList } from '../../components/BookmarksList';
 import { NotesList } from '../../components/NotesList';
 import { UserBookmark, UserNote } from '../../types/bible';
-import { Spacing, BorderRadius } from '../../constants/theme';
 import { Settings } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { UserAvatar } from '../../components/UserAvatar';
@@ -36,88 +35,12 @@ export default function BookmarksScreen() {
     console.log('Delete note:', noteId);
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    header: {
-      backgroundColor: colors.surface,
-      paddingHorizontal: Spacing.md,
-      paddingTop: Spacing.md,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.border,
-    },
-    headerTop: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: Spacing.md,
-    },
-    title: {
-      fontSize: fontSizes['2xl'],
-      color: colors.text,
-      fontWeight: '700',
-    },
-    tabContainer: {
-      flexDirection: 'row',
-      gap: Spacing.sm,
-      paddingBottom: Spacing.sm,
-    },
-    tab: {
-      flex: 1,
-      paddingVertical: Spacing.sm,
-      paddingHorizontal: Spacing.md,
-      borderRadius: BorderRadius.md,
-      alignItems: 'center',
-      backgroundColor: colors.surfaceSecondary,
-    },
-    tabActive: {
-      backgroundColor: colors.primary,
-    },
-    tabText: {
-      fontSize: fontSizes.base,
-      color: colors.textSecondary,
-      fontWeight: '600',
-    },
-    tabTextActive: {
-      color: '#ffffff',
-    },
-    content: {
-      flex: 1,
-      padding: Spacing.md,
-    },
-    authPrompt: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: Spacing.xl,
-    },
-    authPromptText: {
-      fontSize: fontSizes.base,
-      color: colors.textSecondary,
-      textAlign: 'center',
-      marginBottom: Spacing.md,
-    },
-    signInButton: {
-      paddingVertical: Spacing.md,
-      paddingHorizontal: Spacing.xl,
-      backgroundColor: colors.primary,
-      borderRadius: BorderRadius.md,
-    },
-    signInButtonText: {
-      fontSize: fontSizes.base,
-      color: '#ffffff',
-      fontWeight: '600',
-    },
-  });
-
   if (!user) {
     return (
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <View style={styles.header}>
-          <View style={styles.headerTop}>
-            <Text style={styles.title}>Bookmarks & Notes</Text>
+      <SafeAreaView className="flex-1 bg-galaxy-bg" edges={['top']}>
+        <View className="bg-galaxy-card px-4 pt-4 border-b border-white/10">
+          <View className="flex-row justify-between items-center mb-4">
+            <Text className="text-2xl font-bold text-white">Bookmarks & Notes</Text>
             <TouchableOpacity onPress={() => router.push('/settings')}>
               <GlassCard style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center', borderRadius: 20 }}>
                 <Settings size={20} color="#D4AF37" />
@@ -125,12 +48,15 @@ export default function BookmarksScreen() {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.authPrompt}>
-          <Text style={styles.authPromptText}>
+        <View className="flex-1 justify-center items-center p-8">
+          <Text className="text-base text-text-secondary text-center mb-4">
             Sign in to save bookmarks and create notes
           </Text>
-          <TouchableOpacity style={styles.signInButton} onPress={() => router.push('/settings')}>
-            <Text style={styles.signInButtonText}>Sign In</Text>
+          <TouchableOpacity
+            className="py-3 px-8 bg-gold rounded-xl"
+            onPress={() => router.push('/settings')}
+          >
+            <Text className="text-base text-white font-bold">Sign In</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -138,41 +64,38 @@ export default function BookmarksScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <View style={styles.headerTop}>
-          <Text style={styles.title}>Bookmarks & Notes</Text>
+    <SafeAreaView className="flex-1 bg-galaxy-bg" edges={['top']}>
+      <View className="bg-galaxy-card px-4 pt-4 border-b border-white/10">
+        <View className="flex-row justify-between items-center mb-4">
+          <Text className="text-2xl font-bold text-white">Bookmarks & Notes</Text>
           <TouchableOpacity onPress={() => router.push('/settings')}>
             <UserAvatar />
           </TouchableOpacity>
         </View>
-        <View style={styles.tabContainer}>
+        <View className="flex-row gap-2 pb-2">
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'bookmarks' && styles.tabActive]}
+            className={`flex-1 py-2 px-4 rounded-xl items-center ${activeTab === 'bookmarks' ? 'bg-gold' : 'bg-galaxy-accent'}`}
             onPress={() => setActiveTab('bookmarks')}
           >
             <Text
-              style={[
-                styles.tabText,
-                activeTab === 'bookmarks' && styles.tabTextActive,
-              ]}
+              className={`text-base font-bold ${activeTab === 'bookmarks' ? 'text-white' : 'text-text-secondary'}`}
             >
               Bookmarks
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'notes' && styles.tabActive]}
+            className={`flex-1 py-2 px-4 rounded-xl items-center ${activeTab === 'notes' ? 'bg-gold' : 'bg-galaxy-accent'}`}
             onPress={() => setActiveTab('notes')}
           >
             <Text
-              style={[styles.tabText, activeTab === 'notes' && styles.tabTextActive]}
+              className={`text-base font-bold ${activeTab === 'notes' ? 'text-white' : 'text-text-secondary'}`}
             >
               Notes
             </Text>
           </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.content}>
+      <View className="flex-1 p-4">
         {activeTab === 'bookmarks' ? (
           <BookmarksList
             bookmarks={bookmarks}

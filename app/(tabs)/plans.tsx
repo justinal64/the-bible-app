@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../contexts/ThemeContext';
 import { ReadingPlanCard } from '../../components/ReadingPlanCard';
 import { DevotionalCard } from '../../components/DevotionalCard';
 import { ReadingPlan, Devotional } from '../../types/bible';
-import { Spacing, BorderRadius } from '../../constants/theme';
 import { Settings } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
@@ -52,72 +51,11 @@ export default function PlansScreen() {
     },
   ];
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    header: {
-      backgroundColor: colors.surface,
-      paddingHorizontal: Spacing.md,
-      paddingTop: Spacing.md,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.border,
-    },
-    headerTop: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: Spacing.md,
-    },
-    title: {
-      fontSize: fontSizes['2xl'],
-      color: colors.text,
-      fontWeight: '700',
-    },
-    tabContainer: {
-      flexDirection: 'row',
-      gap: Spacing.sm,
-      paddingBottom: Spacing.sm,
-    },
-    tab: {
-      flex: 1,
-      paddingVertical: Spacing.sm,
-      paddingHorizontal: Spacing.md,
-      borderRadius: BorderRadius.md,
-      alignItems: 'center',
-      backgroundColor: colors.surfaceSecondary,
-    },
-    tabActive: {
-      backgroundColor: colors.primary,
-    },
-    tabText: {
-      fontSize: fontSizes.base,
-      color: colors.textSecondary,
-      fontWeight: '600',
-    },
-    tabTextActive: {
-      color: '#ffffff',
-    },
-    content: {
-      flex: 1,
-    },
-    scrollContent: {
-      padding: Spacing.md,
-    },
-    sectionTitle: {
-      fontSize: fontSizes.lg,
-      color: colors.text,
-      fontWeight: '600',
-      marginBottom: Spacing.md,
-    },
-  });
-
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <View style={styles.headerTop}>
-          <Text style={styles.title}>Reading Plans</Text>
+    <SafeAreaView className="flex-1 bg-galaxy-bg" edges={['top']}>
+      <View className="bg-galaxy-card px-4 pt-4 border-b border-white/10">
+        <View className="flex-row justify-between items-center mb-4">
+          <Text className="text-2xl font-bold text-white">Reading Plans</Text>
           <TouchableOpacity onPress={() => router.push('/settings')}>
             {user ? (
               <UserAvatar />
@@ -128,36 +66,33 @@ export default function PlansScreen() {
             )}
           </TouchableOpacity>
         </View>
-        <View style={styles.tabContainer}>
+        <View className="flex-row gap-2 pb-2">
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'plans' && styles.tabActive]}
+            className={`flex-1 py-2 px-4 rounded-xl items-center ${activeTab === 'plans' ? 'bg-gold' : 'bg-galaxy-accent'}`}
             onPress={() => setActiveTab('plans')}
           >
             <Text
-              style={[styles.tabText, activeTab === 'plans' && styles.tabTextActive]}
+              className={`text-base font-bold ${activeTab === 'plans' ? 'text-white' : 'text-text-secondary'}`}
             >
               Plans
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'devotionals' && styles.tabActive]}
+            className={`flex-1 py-2 px-4 rounded-xl items-center ${activeTab === 'devotionals' ? 'bg-gold' : 'bg-galaxy-accent'}`}
             onPress={() => setActiveTab('devotionals')}
           >
             <Text
-              style={[
-                styles.tabText,
-                activeTab === 'devotionals' && styles.tabTextActive,
-              ]}
+              className={`text-base font-bold ${activeTab === 'devotionals' ? 'text-white' : 'text-text-secondary'}`}
             >
               Devotionals
             </Text>
           </TouchableOpacity>
         </View>
       </View>
-      <ScrollView style={styles.content} contentContainerStyle={styles.scrollContent}>
+      <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
         {activeTab === 'plans' ? (
           <View>
-            <Text style={styles.sectionTitle}>Available Plans</Text>
+            <Text className="text-lg text-white font-bold mb-4">Available Plans</Text>
             {mockPlans.map((plan) => (
               <ReadingPlanCard
                 key={plan.id}
@@ -169,7 +104,7 @@ export default function PlansScreen() {
           </View>
         ) : (
           <View>
-            <Text style={styles.sectionTitle}>Daily Devotionals</Text>
+            <Text className="text-lg text-white font-bold mb-4">Daily Devotionals</Text>
             {mockDevotionals.map((devotional) => (
               <DevotionalCard
                 key={devotional.id}

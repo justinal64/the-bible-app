@@ -1,9 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import { ReadingPlan } from '../types/bible';
 import { BookOpen, Calendar } from 'lucide-react-native';
-import { Spacing, BorderRadius } from '../constants/theme';
 
 interface ReadingPlanCardProps {
   plan: ReadingPlan;
@@ -14,111 +13,34 @@ interface ReadingPlanCardProps {
 export function ReadingPlanCard({ plan, progress = 0, onPress }: ReadingPlanCardProps) {
   const { colors, fontSizes } = useTheme();
 
-  const styles = StyleSheet.create({
-    container: {
-      padding: Spacing.md,
-      backgroundColor: colors.surface,
-      borderRadius: BorderRadius.lg,
-      marginBottom: Spacing.md,
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: Spacing.sm,
-    },
-    iconContainer: {
-      width: 40,
-      height: 40,
-      borderRadius: BorderRadius.md,
-      backgroundColor: colors.primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginRight: Spacing.md,
-    },
-    titleContainer: {
-      flex: 1,
-    },
-    title: {
-      fontSize: fontSizes.lg,
-      color: colors.text,
-      fontWeight: '600',
-      marginBottom: Spacing.xs,
-    },
-    category: {
-      fontSize: fontSizes.xs,
-      color: colors.textSecondary,
-      textTransform: 'uppercase',
-      fontWeight: '600',
-    },
-    description: {
-      fontSize: fontSizes.sm,
-      color: colors.textSecondary,
-      lineHeight: fontSizes.sm * 1.5,
-      marginBottom: Spacing.md,
-    },
-    footer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-    durationContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    durationText: {
-      fontSize: fontSizes.sm,
-      color: colors.textSecondary,
-      marginLeft: Spacing.xs,
-    },
-    progressContainer: {
-      flex: 1,
-      marginLeft: Spacing.md,
-    },
-    progressBar: {
-      height: 6,
-      backgroundColor: colors.surfaceSecondary,
-      borderRadius: BorderRadius.sm,
-      overflow: 'hidden',
-    },
-    progressFill: {
-      height: '100%',
-      backgroundColor: colors.success,
-      borderRadius: BorderRadius.sm,
-    },
-    progressText: {
-      fontSize: fontSizes.xs,
-      color: colors.textTertiary,
-      marginTop: Spacing.xs,
-    },
-  });
-
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
-      <View style={styles.header}>
-        <View style={styles.iconContainer}>
+    <TouchableOpacity
+      className="p-4 bg-galaxy-card rounded-2xl mb-4 border border-white/10"
+      onPress={onPress}
+    >
+      <View className="flex-row items-center mb-2">
+        <View className="w-10 h-10 rounded-xl bg-gold justify-center items-center mr-4">
           <BookOpen size={20} color="#ffffff" />
         </View>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>{plan.name}</Text>
-          <Text style={styles.category}>{plan.category}</Text>
+        <View className="flex-1">
+          <Text className="text-lg text-white font-bold mb-1">{plan.name}</Text>
+          <Text className="text-xs text-text-secondary uppercase font-bold">{plan.category}</Text>
         </View>
       </View>
-      <Text style={styles.description} numberOfLines={2}>
+      <Text className="text-sm text-text-secondary leading-6 mb-4" numberOfLines={2}>
         {plan.description}
       </Text>
-      <View style={styles.footer}>
-        <View style={styles.durationContainer}>
-          <Calendar size={16} color={colors.textSecondary} />
-          <Text style={styles.durationText}>{plan.durationDays} days</Text>
+      <View className="flex-row items-center justify-between">
+        <View className="flex-row items-center">
+          <Calendar size={16} color="#A0A0B0" />
+          <Text className="text-sm text-text-secondary ml-1">{plan.durationDays} days</Text>
         </View>
         {progress > 0 && (
-          <View style={styles.progressContainer}>
-            <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: `${progress}%` }]} />
+          <View className="flex-1 ml-4">
+            <View className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+              <View className="h-full bg-green-500 rounded-full" style={{ width: `${progress}%` }} />
             </View>
-            <Text style={styles.progressText}>{Math.round(progress)}% complete</Text>
+            <Text className="text-xs text-text-tertiary mt-1">{Math.round(progress)}% complete</Text>
           </View>
         )}
       </View>
