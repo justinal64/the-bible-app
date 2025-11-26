@@ -1,9 +1,10 @@
 {
   "expo": {
-    "name": "bible-app",
+    "name": "The Bible App",
     "slug": "bible-app",
     "version": "1.0.0",
     "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "dark",
     "splash": {
@@ -15,6 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.justinal64.bibleapp",
+      "buildNumber": "1",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
