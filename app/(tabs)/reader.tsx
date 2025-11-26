@@ -13,6 +13,9 @@ import { Button } from '../../components/ui/Button';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserAvatar } from '../../components/UserAvatar';
 
+import * as Speech from 'expo-speech';
+import { useBibleVerses } from '../../hooks/useBibleVerses';
+
 export default function ReaderScreen() {
   const router = useRouter();
   const { colors, fontSize, setFontSize } = useTheme();
@@ -22,15 +25,91 @@ export default function ReaderScreen() {
   const [translationId, setTranslationId] = useState('de4e12af7f28f599-01'); // KJV
   const [showBookSelector, setShowBookSelector] = useState(false);
   const [showTextSettings, setShowTextSettings] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [voice, setVoice] = useState<Speech.Voice | null>(null);
+
+  const { verses, loading } = useBibleVerses({ bookId, chapter, translationId });
 
   const currentBook = BIBLE_BOOKS.find(b => b.id === bookId);
   const selectedTranslation = TRANSLATIONS.find(t => t.id === translationId) || TRANSLATIONS[0];
+
+  React.useEffect(() => {
+    loadBestVoice();
+  }, []);
+
+  const loadBestVoice = async () => {
+    try {
+      const voices = await Speech.getAvailableVoicesAsync();
+      if (voices.length > 0) {
+        // Prioritize English voices
+        const englishVoices = voices.filter(v => v.language.startsWith('en'));
+
+        // Try to find an enhanced/premium voice
+        // iOS often has 'Enhanced' in the name or specific high quality identifiers
+        let bestVoice = englishVoices.find(v =>
+          v.quality === 'Enhanced' ||
+          v.name.includes('Enhanced') ||
+          v.identifier.includes('siri')
+        );
+
+        // Fallback to any English voice
+        if (!bestVoice) {
+          bestVoice = englishVoices[0];
+        }
+
+        // Fallback to any voice
+        if (!bestVoice) {
+          bestVoice = voices[0];
+        }
+
+        setVoice(bestVoice);
+        console.log('Selected voice:', bestVoice.name, bestVoice.identifier);
+      }
+    } catch (e) {
+      console.log('Error loading voices:', e);
+    }
+  };
 
   const handleSelection = (newBookId: number, newChapter: number) => {
     setBookId(newBookId);
     setChapter(newChapter);
     setShowBookSelector(false);
+    stopSpeech();
   };
+
+  const stopSpeech = async () => {
+    const speaking = await Speech.isSpeakingAsync();
+    if (speaking) {
+      Speech.stop();
+      setIsSpeaking(false);
+    }
+  };
+
+  const toggleSpeech = async () => {
+    const speaking = await Speech.isSpeakingAsync();
+
+    if (speaking) {
+      await stopSpeech();
+    } else {
+      setIsSpeaking(true);
+      const textToRead = verses.map(v => v.text).join(' ');
+      Speech.speak(textToRead, {
+        voice: voice?.identifier,
+        rate: 0.9, // Slightly slower for better comprehension
+        pitch: 1.0,
+        onDone: () => setIsSpeaking(false),
+        onStopped: () => setIsSpeaking(false),
+        onError: () => setIsSpeaking(false),
+      });
+    }
+  };
+
+  // Stop speech when leaving the screen or changing chapters
+  React.useEffect(() => {
+    return () => {
+      stopSpeech();
+    };
+  }, [bookId, chapter]);
 
   const handleNextChapter = () => {
     if (!currentBook) return;
@@ -87,6 +166,13 @@ export default function ReaderScreen() {
 
           {/* Right Icons */}
           <View className="flex-row gap-5 items-center">
+            <TouchableOpacity onPress={toggleSpeech}>
+              {isSpeaking ? (
+                <Volume2 size={24} color="#D4AF37" fill="#D4AF37" />
+              ) : (
+                <Volume2 size={24} color="#FFFFFF" />
+              )}
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => setShowTextSettings(true)}>
               <Type size={24} color="#FFFFFF" />
             </TouchableOpacity>
@@ -105,9 +191,8 @@ export default function ReaderScreen() {
         </View>
 
         <BibleReader
-          bookId={bookId}
-          chapter={chapter}
-          translationId={translationId}
+          verses={verses}
+          loading={loading}
           onVersePress={(verse) => console.log('Verse pressed:', verse)}
           onNextChapter={handleNextChapter}
           onPreviousChapter={handlePreviousChapter}

@@ -3,12 +3,11 @@ import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Animated }
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { GlassCard } from './ui/GlassCard';
 import { useTheme } from '../contexts/ThemeContext';
-import { useBibleVerses } from '../hooks/useBibleVerses';
+import { BibleVerse } from '../types/bible';
 
 interface BibleReaderProps {
-  bookId: number;
-  chapter: number;
-  translationId: string;
+  verses: BibleVerse[];
+  loading: boolean;
   onVersePress?: (verse: number) => void;
   highlightedVerses?: Set<number>;
   bookmarkedVerses?: Set<number>;
@@ -17,9 +16,8 @@ interface BibleReaderProps {
 }
 
 export function BibleReader({
-  bookId,
-  chapter,
-  translationId,
+  verses,
+  loading,
   onVersePress,
   highlightedVerses = new Set(),
   bookmarkedVerses = new Set(),
@@ -27,7 +25,6 @@ export function BibleReader({
   onPreviousChapter,
 }: BibleReaderProps) {
   const { colors, fontSizes, lineSpacingValue, verseNumbersVisible } = useTheme();
-  const { verses, loading } = useBibleVerses({ bookId, chapter, translationId });
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -54,7 +51,7 @@ export function BibleReader({
         }),
       ]).start();
     }
-  }, [loading, chapter, bookId]);
+  }, [loading, verses]); // Re-run when verses change
 
   const [scrollProgress, setScrollProgress] = React.useState(0);
 
