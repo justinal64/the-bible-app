@@ -9,10 +9,19 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserAvatar } from '../../components/UserAvatar';
 
+import { DAILY_VERSES, DailyVerse } from '../../constants/dailyVerses';
+
 export default function DashboardScreen() {
   const { colors } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
+  const [dailyVerse, setDailyVerse] = useState<DailyVerse>(DAILY_VERSES[0]);
+
+  React.useEffect(() => {
+    // Select a random verse on mount
+    const randomIndex = Math.floor(Math.random() * DAILY_VERSES.length);
+    setDailyVerse(DAILY_VERSES[randomIndex]);
+  }, []);
 
   const QuickAccessItem = ({ icon, label, onPress }: { icon: React.ReactNode, label: string, onPress: () => void }) => (
     <TouchableOpacity onPress={onPress} className="items-center justify-center w-[22%]">
@@ -48,49 +57,22 @@ export default function DashboardScreen() {
           <View className="px-4 mb-8">
             <View className="flex-row justify-between items-center mb-4">
               <Text className="text-lg font-bold text-text-primary">Daily Verse</Text>
-              <Text className="text-xs text-text-secondary">2m ago</Text>
+              <Text className="text-xs text-text-secondary">Today</Text>
             </View>
             <GlassCard style={{ height: 200, padding: 0, overflow: 'hidden' }}>
               <Image
-                source={{ uri: 'https://images.unsplash.com/photo-1507692049790-de58293a4697?q=80&w=2070&auto=format&fit=crop' }}
+                source={{ uri: dailyVerse.image }}
                 className="absolute inset-0 w-full h-full"
                 resizeMode="cover"
               />
               <View className="absolute inset-0 bg-black/40" />
               <View className="flex-1 justify-end p-6">
                 <Text className="text-xl font-serif italic mb-2 text-text-primary" style={{ color: '#FFFFFF' }}>
-                  "In the beginning God created the heaven and the earth."
+                  "{dailyVerse.text}"
                 </Text>
-                <Text className="font-bold text-gold">Genesis 1:1</Text>
+                <Text className="font-bold text-gold">{dailyVerse.reference}</Text>
               </View>
             </GlassCard>
-          </View>
-
-          {/* Quick Access */}
-          <View className="px-4 mb-8">
-            <Text className="text-lg font-bold mb-4 text-text-primary">Quick Access</Text>
-            <View className="flex-row justify-between flex-wrap">
-              <QuickAccessItem
-                icon={<BookOpen size={24} color="#D4AF37" />}
-                label="Bible"
-                onPress={() => router.push('/reader')}
-              />
-              <QuickAccessItem
-                icon={<Bookmark size={24} color="#D4AF37" />}
-                label="Saved"
-                onPress={() => router.push('/bookmarks')}
-              />
-              <QuickAccessItem
-                icon={<Search size={24} color="#D4AF37" />}
-                label="Search"
-                onPress={() => router.push('/search')}
-              />
-              <QuickAccessItem
-                icon={<Settings size={24} color="#D4AF37" />}
-                label="Settings"
-                onPress={() => router.push('/settings')}
-              />
-            </View>
           </View>
 
           {/* Reading Plan */}
