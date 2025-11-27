@@ -76,7 +76,7 @@ export default function DashboardScreen() {
           </View>
 
           {/* Reading Plan */}
-          <View className="px-4 mb-8">
+          {/* <View className="px-4 mb-8">
             <View className="flex-row justify-between items-center mb-4">
               <Text className="text-lg font-bold text-text-primary">Reading Plan</Text>
               <TouchableOpacity onPress={() => router.push('/plans')}>
@@ -115,7 +115,7 @@ export default function DashboardScreen() {
                 </GlassCard>
               </TouchableOpacity>
             </ScrollView>
-          </View>
+          </View> */}
 
         </ScrollView>
       </SafeAreaView>
