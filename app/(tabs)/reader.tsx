@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { View, Modal, TouchableOpacity, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../../contexts/ThemeContext';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { BibleReader } from '../../components/BibleReader';
 import { BookSelector } from '../../components/BookSelector';
 import { TranslationSelector, TRANSLATIONS } from '../../components/TranslationSelector';
+import { TextSettingsModal } from '../../components/TextSettingsModal';
 import { BIBLE_BOOKS } from '../../constants/bibleBooks';
 import { Search, Type, Settings } from 'lucide-react-native';
 import { Button } from '../../components/ui/Button';
@@ -19,7 +19,6 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 export default function ReaderScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { colors, fontSize, setFontSize } = useTheme();
   const { user } = useAuth();
 
   const [bookId, setBookId] = useState(params.bookId ? parseInt(params.bookId as string) : 1);
@@ -233,42 +232,10 @@ export default function ReaderScreen() {
           </SafeAreaView>
         </Modal>
 
-        {/* Text Settings Modal */}
-        <Modal
+        <TextSettingsModal
           visible={showTextSettings}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={() => setShowTextSettings(false)}
-        >
-          <TouchableOpacity
-            className="flex-1 bg-black/50 justify-center items-center"
-            activeOpacity={1}
-            onPress={() => setShowTextSettings(false)}
-          >
-            <TouchableOpacity
-              activeOpacity={1}
-              className="bg-galaxy-card w-[80%] rounded-2xl p-6 border border-white/10"
-            >
-              <Text className="text-white font-bold text-lg mb-4 text-center">Text Settings</Text>
-
-              <View className="flex-row justify-between items-center bg-white/5 rounded-xl p-2 mb-4">
-                {(['small', 'medium', 'large', 'xlarge'] as const).map((size) => (
-                  <TouchableOpacity
-                    key={size}
-                    onPress={() => setFontSize(size)}
-                    className={`p-3 rounded-lg ${fontSize === size ? 'bg-gold' : 'bg-transparent'}`}
-                  >
-                    <Text className={`font-bold ${fontSize === size ? 'text-galaxy-bg' : 'text-white'}`} style={{ fontSize: size === 'small' ? 14 : size === 'medium' ? 18 : size === 'large' ? 22 : 26 }}>
-                      Aa
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-
-              <Button title="Done" onPress={() => setShowTextSettings(false)} variant="primary" />
-            </TouchableOpacity>
-          </TouchableOpacity>
-        </Modal>
+          onClose={() => setShowTextSettings(false)}
+        />
       </SafeAreaView>
     </GalaxyBackground>
   );
