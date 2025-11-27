@@ -1,36 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../../contexts/ThemeContext';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { GlassCard } from '../../components/ui/GlassCard';
-import { ChevronRight, BookOpen, Search, Settings, Bookmark } from 'lucide-react-native';
+import { Settings } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserAvatar } from '../../components/UserAvatar';
-
-import { DAILY_VERSES, DailyVerse } from '../../constants/dailyVerses';
+import { useDailyVerse } from '../../hooks/useDailyVerse';
+import { useDailyPrayer } from '../../hooks/useDailyPrayer';
 
 export default function DashboardScreen() {
-  const { colors } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
-  const [dailyVerse, setDailyVerse] = useState<DailyVerse>(DAILY_VERSES[0]);
-
-  React.useEffect(() => {
-    // Select a random verse on mount
-    const randomIndex = Math.floor(Math.random() * DAILY_VERSES.length);
-    setDailyVerse(DAILY_VERSES[randomIndex]);
-  }, []);
-
-  const QuickAccessItem = ({ icon, label, onPress }: { icon: React.ReactNode, label: string, onPress: () => void }) => (
-    <TouchableOpacity onPress={onPress} className="items-center justify-center w-[22%]">
-      <GlassCard style={{ width: 60, height: 60, alignItems: 'center', justifyContent: 'center', borderRadius: 20, marginBottom: 8 }}>
-        {icon}
-      </GlassCard>
-      <Text className="text-xs font-medium text-text-secondary">{label}</Text>
-    </TouchableOpacity>
-  );
+  const dailyVerse = useDailyVerse();
+  const dailyPrayer = useDailyPrayer();
 
   return (
     <GalaxyBackground>
@@ -72,6 +56,19 @@ export default function DashboardScreen() {
                 </Text>
                 <Text className="font-bold text-gold">{dailyVerse.reference}</Text>
               </View>
+            </GlassCard>
+          </View>
+
+          {/* Daily Prayer */}
+          <View className="px-4 mb-8">
+            <View className="flex-row justify-between items-center mb-4">
+              <Text className="text-lg font-bold text-text-primary">Daily Prayer</Text>
+            </View>
+            <GlassCard style={{ padding: 20 }}>
+              <Text className="text-lg font-serif italic mb-4 text-text-primary leading-7">
+                "{dailyPrayer.text}"
+              </Text>
+              <Text className="font-bold text-gold text-right">- {dailyPrayer.title}</Text>
             </GlassCard>
           </View>
 
