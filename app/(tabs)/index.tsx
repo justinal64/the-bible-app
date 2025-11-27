@@ -1,18 +1,15 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { View, Text, ScrollView, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { GlassCard } from '../../components/ui/GlassCard';
-import { Settings } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
-import { UserAvatar } from '../../components/UserAvatar';
 import { useDailyVerse } from '../../hooks/useDailyVerse';
 import { useDailyPrayer } from '../../hooks/useDailyPrayer';
+import { ProfileButton } from '../../components/ProfileButton';
 
 export default function DashboardScreen() {
-  const { user } = useAuth();
-  const router = useRouter();
   const dailyVerse = useDailyVerse();
   const dailyPrayer = useDailyPrayer();
 
@@ -26,15 +23,7 @@ export default function DashboardScreen() {
               <Text className="text-sm font-medium mb-1 text-text-secondary">Welcome back</Text>
               <Text className="text-2xl font-bold text-text-primary">Home Dashboard</Text>
             </View>
-            <TouchableOpacity onPress={() => router.push('/settings')}>
-              {user ? (
-                <UserAvatar />
-              ) : (
-                <GlassCard style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center', borderRadius: 20 }}>
-                  <Settings size={20} color="#D4AF37" />
-                </GlassCard>
-              )}
-            </TouchableOpacity>
+            <ProfileButton />
           </View>
 
           {/* Daily Verse */}

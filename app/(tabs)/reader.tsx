@@ -7,10 +7,9 @@ import { BookSelector } from '../../components/BookSelector';
 import { TranslationSelector, TRANSLATIONS } from '../../components/TranslationSelector';
 import { TextSettingsModal } from '../../components/TextSettingsModal';
 import { BIBLE_BOOKS } from '../../constants/bibleBooks';
-import { Search, Type, Settings } from 'lucide-react-native';
+import { Search, Type } from 'lucide-react-native';
 import { Button } from '../../components/ui/Button';
-import { useAuth } from '../../contexts/AuthContext';
-import { UserAvatar } from '../../components/UserAvatar';
+import { ProfileButton } from '../../components/ProfileButton';
 import * as Speech from 'expo-speech';
 import { Audio } from 'expo-av';
 import { useBibleVerses } from '../../hooks/useBibleVerses';
@@ -19,17 +18,13 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 export default function ReaderScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { user } = useAuth();
-
   const [bookId, setBookId] = useState(params.bookId ? parseInt(params.bookId as string) : 1);
   const [chapter, setChapter] = useState(params.chapter ? parseInt(params.chapter as string) : 1);
   const [translationId, setTranslationId] = useState('de4e12af7f28f599-01');
-
   const [showBookSelector, setShowBookSelector] = useState(false);
   const [showTextSettings, setShowTextSettings] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voice, setVoice] = useState<Speech.Voice | null>(null);
-
   const { verses, loading } = useBibleVerses({ bookId, chapter, translationId });
 
   const currentBook = BIBLE_BOOKS.find(b => b.id === bookId);
@@ -194,13 +189,7 @@ export default function ReaderScreen() {
             <TouchableOpacity onPress={() => router.push('/search')}>
               <Search size={24} color="#FFFFFF" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push('/settings')}>
-              {user ? (
-                <UserAvatar />
-              ) : (
-                <Settings size={24} color="#FFFFFF" />
-              )}
-            </TouchableOpacity>
+            <ProfileButton />
 
           </View>
         </View>
