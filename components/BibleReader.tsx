@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Animated, FlatList } from 'react-native';
-import { ChevronLeft, ChevronRight } from 'lucide-react-native';
+import { ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react-native';
 import { GlassCard } from './ui/GlassCard';
 import { useTheme } from '../contexts/ThemeContext';
 import { BibleVerse } from '../types/bible';
@@ -13,6 +13,8 @@ interface BibleReaderProps {
   bookmarkedVerses?: Set<number>;
   onNextChapter?: () => void;
   onPreviousChapter?: () => void;
+  onToggleAudio?: () => void;
+  isSpeaking?: boolean;
 }
 
 export function BibleReader({
@@ -23,6 +25,8 @@ export function BibleReader({
   bookmarkedVerses = new Set(),
   onNextChapter,
   onPreviousChapter,
+  onToggleAudio,
+  isSpeaking = false,
   scrollToVerse,
 }: BibleReaderProps & { scrollToVerse?: number }) {
   const { colors, fontSizes, lineSpacingValue, verseNumbersVisible } = useTheme();
@@ -142,7 +146,19 @@ export function BibleReader({
               <ChevronLeft size={24} color="#D4AF37" />
             </GlassCard>
           </TouchableOpacity>
-        ) : <View />}
+        ) : <View style={{ width: 50 }} />}
+
+        {onToggleAudio && (
+          <TouchableOpacity onPress={onToggleAudio}>
+            <GlassCard style={{ width: 50, height: 50, borderRadius: 25, alignItems: 'center', justifyContent: 'center' }}>
+              {isSpeaking ? (
+                <Pause size={24} color="#D4AF37" fill="#D4AF37" />
+              ) : (
+                <Play size={24} color="#D4AF37" fill="#D4AF37" style={{ marginLeft: 4 }} />
+              )}
+            </GlassCard>
+          </TouchableOpacity>
+        )}
 
         {onNextChapter ? (
           <TouchableOpacity onPress={onNextChapter}>
@@ -150,7 +166,7 @@ export function BibleReader({
               <ChevronRight size={24} color="#D4AF37" />
             </GlassCard>
           </TouchableOpacity>
-        ) : <View />}
+        ) : <View style={{ width: 50 }} />}
       </View>
     </View>
   );

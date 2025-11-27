@@ -1,25 +1,20 @@
 import React, { useState } from 'react';
 import { View, Modal, TouchableOpacity, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { useTheme } from '../../contexts/ThemeContext';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { BibleReader } from '../../components/BibleReader';
 import { BookSelector } from '../../components/BookSelector';
 import { TranslationSelector, TRANSLATIONS } from '../../components/TranslationSelector';
 import { BIBLE_BOOKS } from '../../constants/bibleBooks';
-import { Volume2, Search, Type, Settings } from 'lucide-react-native';
+import { Search, Type, Settings } from 'lucide-react-native';
 import { Button } from '../../components/ui/Button';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserAvatar } from '../../components/UserAvatar';
-
 import * as Speech from 'expo-speech';
 import { Audio } from 'expo-av';
 import { useBibleVerses } from '../../hooks/useBibleVerses';
-
 import { useLocalSearchParams, useRouter } from 'expo-router';
-
-// ... imports
 
 export default function ReaderScreen() {
   const router = useRouter();
@@ -27,10 +22,9 @@ export default function ReaderScreen() {
   const { colors, fontSize, setFontSize } = useTheme();
   const { user } = useAuth();
 
-  // Initialize state from params if available, otherwise default
   const [bookId, setBookId] = useState(params.bookId ? parseInt(params.bookId as string) : 1);
   const [chapter, setChapter] = useState(params.chapter ? parseInt(params.chapter as string) : 1);
-  const [translationId, setTranslationId] = useState('de4e12af7f28f599-01'); // KJV
+  const [translationId, setTranslationId] = useState('de4e12af7f28f599-01');
 
   const [showBookSelector, setShowBookSelector] = useState(false);
   const [showTextSettings, setShowTextSettings] = useState(false);
@@ -47,7 +41,6 @@ export default function ReaderScreen() {
     loadBestVoice();
   }, []);
 
-  // Update state if params change (e.g. deep link while screen is open)
   React.useEffect(() => {
     if (params.bookId && params.chapter) {
       setBookId(parseInt(params.bookId as string));
@@ -196,13 +189,6 @@ export default function ReaderScreen() {
 
           {/* Right Icons */}
           <View className="flex-row gap-5 items-center">
-            <TouchableOpacity onPress={toggleSpeech}>
-              {isSpeaking ? (
-                <Volume2 size={24} color="#D4AF37" fill="#D4AF37" />
-              ) : (
-                <Volume2 size={24} color="#FFFFFF" />
-              )}
-            </TouchableOpacity>
             <TouchableOpacity onPress={() => setShowTextSettings(true)}>
               <Type size={24} color="#FFFFFF" />
             </TouchableOpacity>
@@ -226,6 +212,8 @@ export default function ReaderScreen() {
           onVersePress={(verse) => console.log('Verse pressed:', verse)}
           onNextChapter={handleNextChapter}
           onPreviousChapter={handlePreviousChapter}
+          onToggleAudio={toggleSpeech}
+          isSpeaking={isSpeaking}
           scrollToVerse={params.verse ? parseInt(params.verse as string) : undefined}
         />
 
