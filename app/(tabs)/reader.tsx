@@ -226,6 +226,7 @@ export default function ReaderScreen() {
           onVersePress={(verse) => console.log('Verse pressed:', verse)}
           onNextChapter={handleNextChapter}
           onPreviousChapter={handlePreviousChapter}
+          scrollToVerse={params.verse ? parseInt(params.verse as string) : undefined}
         />
 
         <Modal

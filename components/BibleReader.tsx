@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Animated, FlatList } from 'react-native';
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { GlassCard } from './ui/GlassCard';
 import { useTheme } from '../contexts/ThemeContext';
@@ -23,35 +23,42 @@ export function BibleReader({
   bookmarkedVerses = new Set(),
   onNextChapter,
   onPreviousChapter,
-}: BibleReaderProps) {
+  scrollToVerse,
+}: BibleReaderProps & { scrollToVerse?: number }) {
   const { colors, fontSizes, lineSpacingValue, verseNumbersVisible } = useTheme();
+  const flatListRef = useRef<FlatList>(null);
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(20)).current;
 
   useEffect(() => {
     if (!loading) {
-      // Reset values
       fadeAnim.setValue(0);
-      translateY.setValue(20);
-
-      // Run animation
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-        Animated.spring(translateY, {
-          toValue: 0,
-          friction: 8,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-      ]).start();
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }).start();
     }
-  }, [loading, verses]); // Re-run when verses change
+  }, [loading, verses]);
+
+  // Scroll to verse when verses load or scrollToVerse changes
+  useEffect(() => {
+    if (!loading && verses.length > 0 && scrollToVerse && flatListRef.current) {
+      // Find index of the verse
+      const index = verses.findIndex(v => v.verse === scrollToVerse);
+      if (index !== -1) {
+        // Small timeout to ensure layout is ready
+        setTimeout(() => {
+          flatListRef.current?.scrollToIndex({
+            index,
+            animated: true,
+            viewPosition: 0.1 // Show near top
+          });
+        }, 500);
+      }
+    }
+  }, [loading, verses, scrollToVerse]);
 
   const [scrollProgress, setScrollProgress] = React.useState(0);
 
@@ -60,6 +67,34 @@ export function BibleReader({
     const paddingToBottom = 20;
     const progress = contentOffset.y / (contentSize.height - layoutMeasurement.height - paddingToBottom);
     setScrollProgress(Math.min(Math.max(progress, 0), 1));
+  };
+
+  const renderItem = ({ item }: { item: BibleVerse }) => {
+    const isHighlighted = highlightedVerses.has(item.verse);
+    const isTargetVerse = scrollToVerse === item.verse;
+
+    return (
+      <TouchableOpacity
+        onPress={() => onVersePress?.(item.verse)}
+        activeOpacity={0.7}
+        className={`mb-2 rounded-lg p-2 ${isHighlighted ? "bg-gold/20" : ""} ${isTargetVerse ? "bg-white/10 border border-gold/30" : ""}`}
+      >
+        <Text
+          style={{ fontSize: fontSizes.base, lineHeight: fontSizes.base * lineSpacingValue }}
+          className="text-text-primary"
+        >
+          {verseNumbersVisible && (
+            <Text
+              style={{ fontSize: fontSizes.sm }}
+              className="font-bold text-gold mr-2"
+            >
+              {item.verse}{' '}
+            </Text>
+          )}
+          {item.text}
+        </Text>
+      </TouchableOpacity>
+    );
   };
 
   if (loading) {
@@ -80,45 +115,24 @@ export function BibleReader({
         />
       </View>
 
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ padding: 16, paddingBottom: 75, paddingTop: 20 }}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-      >
-        <Animated.View
-          style={{
-            opacity: fadeAnim,
-            transform: [{ translateY }],
+      <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+        <FlatList
+          ref={flatListRef}
+          data={verses}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ padding: 16, paddingBottom: 100, paddingTop: 20 }}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+          onScrollToIndexFailed={(info) => {
+            const wait = new Promise(resolve => setTimeout(resolve, 500));
+            wait.then(() => {
+              flatListRef.current?.scrollToIndex({ index: info.index, animated: true });
+            });
           }}
-          className="bg-galaxy-card/60 border border-white/10 rounded-2xl p-5 min-h-[400px]"
-        >
-          <Text className="text-lg leading-[1.8] font-system">
-            {verses.map((verse) => {
-              const isHighlighted = highlightedVerses.has(verse.verse);
-
-              return (
-                <Text
-                  key={verse.id}
-                  onPress={() => onVersePress?.(verse.verse)}
-                  style={{ fontSize: fontSizes.base, lineHeight: fontSizes.base * lineSpacingValue }}
-                  className={`text-text-primary ${isHighlighted ? "bg-gold/20" : ""}`}
-                >
-                  {verseNumbersVisible && (
-                    <Text
-                      style={{ fontSize: fontSizes.sm }}
-                      className="font-bold -top-1 !text-gold"
-                    >
-                      {verse.verse}{' '}
-                    </Text>
-                  )}
-                  {verse.text}{' '}
-                </Text>
-              );
-            })}
-          </Text>
-        </Animated.View>
-      </ScrollView>
+        />
+      </Animated.View>
 
       {/* Floating Navigation Buttons */}
       <View className="absolute bottom-6 left-0 right-0 flex-row justify-between px-6" pointerEvents="box-none">
