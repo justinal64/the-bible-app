@@ -7,8 +7,8 @@ import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { LoginModal } from '../../components/LoginModal';
 import { EditProfileModal } from '../../components/EditProfileModal';
-import { UserAvatar } from '../../components/UserAvatar';
-import { Moon, Type, Bell, ChevronRight, User, Shield, LogOut } from 'lucide-react-native';
+import { Moon, Type, Bell, ChevronRight, Shield, LogOut, User } from 'lucide-react-native';
+import { ProfileButton } from '../../components/ProfileButton';
 
 export default function SettingsScreen() {
   const SettingItem = ({ icon, label, value, type = 'toggle' }: any) => (
@@ -43,7 +43,7 @@ export default function SettingsScreen() {
         <ScrollView contentContainerClassName="p-5">
           <View className="flex-row justify-between items-center mb-8">
             <Text className="text-2xl font-bold text-text-primary">Settings</Text>
-            {user && <UserAvatar />}
+            <ProfileButton />
           </View>
 
           <GlassCard style={{ marginBottom: 24, padding: 0 }}>

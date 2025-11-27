@@ -3,16 +3,14 @@ import { View, Text, TextInput, ScrollView, TouchableOpacity, ActivityIndicator,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { GlassCard } from '../../components/ui/GlassCard';
-import { Search as SearchIcon, Clock, ArrowRight, Settings } from 'lucide-react-native';
+import { Search as SearchIcon, Clock, ArrowRight } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
-import { useAuth } from '../../contexts/AuthContext';
-import { UserAvatar } from '../../components/UserAvatar';
 import { useBibleSearch, SearchResult } from '../../hooks/useBibleSearch';
 import { parseReference } from '../../utils/bibleReferenceParser';
+import { ProfileButton } from '../../components/ProfileButton';
 
 export default function SearchScreen() {
   const router = useRouter();
-  const { user } = useAuth();
   const [query, setQuery] = useState('');
   const { search, results, loading, error } = useBibleSearch();
 
@@ -56,15 +54,7 @@ export default function SearchScreen() {
         <View className="flex-1 px-4 py-4">
           <View className="flex-row justify-between items-center mb-6">
             <Text className="text-2xl font-bold text-text-primary">Search</Text>
-            <TouchableOpacity onPress={() => router.push('/settings')}>
-              {user ? (
-                <UserAvatar />
-              ) : (
-                <GlassCard style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center', borderRadius: 20 }}>
-                  <Settings size={20} color="#D4AF37" />
-                </GlassCard>
-              )}
-            </TouchableOpacity>
+            <ProfileButton />
           </View>
 
           {/* Search Bar */}
