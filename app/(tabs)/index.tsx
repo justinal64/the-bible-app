@@ -3,8 +3,6 @@ import { View, Text, ScrollView, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { GlassCard } from '../../components/ui/GlassCard';
-import { useRouter } from 'expo-router';
-import { useAuth } from '../../contexts/AuthContext';
 import { useDailyVerse } from '../../hooks/useDailyVerse';
 import { useDailyPrayer } from '../../hooks/useDailyPrayer';
 import { ProfileButton } from '../../components/ProfileButton';
@@ -60,49 +58,6 @@ export default function DashboardScreen() {
               <Text className="font-bold text-gold text-right">- {dailyPrayer.title}</Text>
             </GlassCard>
           </View>
-
-          {/* Reading Plan */}
-          {/* <View className="px-4 mb-8">
-            <View className="flex-row justify-between items-center mb-4">
-              <Text className="text-lg font-bold text-text-primary">Reading Plan</Text>
-              <TouchableOpacity onPress={() => router.push('/plans')}>
-                <Text className="text-sm text-gold">View All</Text>
-              </TouchableOpacity>
-            </View>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-4 px-4">
-              <TouchableOpacity className="mr-4">
-                <GlassCard style={{ width: 160, height: 200, padding: 0 }}>
-                  <Image
-                    source={{ uri: 'https://images.unsplash.com/photo-1491841550275-ad7854e35ca6?q=80&w=1974&auto=format&fit=crop' }}
-                    style={{ width: '100%', height: 120 }}
-                  />
-                  <View className="p-4">
-                    <Text className="font-bold mb-1 text-text-primary">New Testament</Text>
-                    <Text className="text-xs text-text-secondary">Day 12 of 90</Text>
-                    <View className="h-1 bg-gray-700 rounded-full mt-3">
-                      <View className="h-1 bg-gold w-[40%] rounded-full" />
-                    </View>
-                  </View>
-                </GlassCard>
-              </TouchableOpacity>
-              <TouchableOpacity className="mr-4">
-                <GlassCard style={{ width: 160, height: 200, padding: 0 }}>
-                  <Image
-                    source={{ uri: 'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=2070&auto=format&fit=crop' }}
-                    style={{ width: '100%', height: 120 }}
-                  />
-                  <View className="p-4">
-                    <Text className="font-bold mb-1 text-text-primary">Psalms Daily</Text>
-                    <Text className="text-xs text-text-secondary">Day 5 of 30</Text>
-                    <View className="h-1 bg-gray-700 rounded-full mt-3">
-                      <View className="h-1 bg-gold w-[15%] rounded-full" />
-                    </View>
-                  </View>
-                </GlassCard>
-              </TouchableOpacity>
-            </ScrollView>
-          </View> */}
-
         </ScrollView>
       </SafeAreaView>
     </GalaxyBackground>
