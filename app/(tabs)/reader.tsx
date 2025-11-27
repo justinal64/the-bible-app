@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Modal, TouchableOpacity, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+
 import { useTheme } from '../../contexts/ThemeContext';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { BibleReader } from '../../components/BibleReader';
@@ -17,13 +17,21 @@ import * as Speech from 'expo-speech';
 import { Audio } from 'expo-av';
 import { useBibleVerses } from '../../hooks/useBibleVerses';
 
+import { useLocalSearchParams, useRouter } from 'expo-router';
+
+// ... imports
+
 export default function ReaderScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams();
   const { colors, fontSize, setFontSize } = useTheme();
   const { user } = useAuth();
-  const [bookId, setBookId] = useState(1);
-  const [chapter, setChapter] = useState(1);
+
+  // Initialize state from params if available, otherwise default
+  const [bookId, setBookId] = useState(params.bookId ? parseInt(params.bookId as string) : 1);
+  const [chapter, setChapter] = useState(params.chapter ? parseInt(params.chapter as string) : 1);
   const [translationId, setTranslationId] = useState('de4e12af7f28f599-01'); // KJV
+
   const [showBookSelector, setShowBookSelector] = useState(false);
   const [showTextSettings, setShowTextSettings] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -38,6 +46,14 @@ export default function ReaderScreen() {
     configureAudio();
     loadBestVoice();
   }, []);
+
+  // Update state if params change (e.g. deep link while screen is open)
+  React.useEffect(() => {
+    if (params.bookId && params.chapter) {
+      setBookId(parseInt(params.bookId as string));
+      setChapter(parseInt(params.chapter as string));
+    }
+  }, [params.bookId, params.chapter]);
 
   const configureAudio = async () => {
     try {

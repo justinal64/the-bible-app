@@ -8,6 +8,7 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserAvatar } from '../../components/UserAvatar';
 import { useBibleSearch, SearchResult } from '../../hooks/useBibleSearch';
+import { parseReference } from '../../utils/bibleReferenceParser';
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -25,9 +26,21 @@ export default function SearchScreen() {
     <TouchableOpacity
       className="mb-3"
       onPress={() => {
-        // TODO: Navigate to specific verse in reader
-        // For now, just log it
-        console.log('Selected:', item.reference);
+        const parsed = parseReference(item.reference);
+        if (parsed) {
+          router.push({
+            pathname: '/reader',
+            params: {
+              bookId: parsed.bookId,
+              chapter: parsed.chapter,
+              verse: parsed.verse
+            }
+          });
+        } else {
+          console.warn('Could not parse reference:', item.reference);
+          // Fallback: just go to reader without specific params
+          router.push('/reader');
+        }
       }}
     >
       <GlassCard style={{ padding: 16, borderRadius: 12 }}>
