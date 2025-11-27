@@ -10,9 +10,8 @@ import { BIBLE_BOOKS } from '../../constants/bibleBooks';
 import { Search, Type } from 'lucide-react-native';
 import { Button } from '../../components/ui/Button';
 import { ProfileButton } from '../../components/ProfileButton';
-import * as Speech from 'expo-speech';
-import { Audio } from 'expo-av';
 import { useBibleVerses } from '../../hooks/useBibleVerses';
+import { useTextToSpeech } from '../../hooks/useTextToSpeech';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 export default function ReaderScreen() {
@@ -23,17 +22,12 @@ export default function ReaderScreen() {
   const [translationId, setTranslationId] = useState('de4e12af7f28f599-01');
   const [showBookSelector, setShowBookSelector] = useState(false);
   const [showTextSettings, setShowTextSettings] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [voice, setVoice] = useState<Speech.Voice | null>(null);
+
   const { verses, loading } = useBibleVerses({ bookId, chapter, translationId });
+  const { isSpeaking, speak, stopSpeech } = useTextToSpeech();
 
   const currentBook = BIBLE_BOOKS.find(b => b.id === bookId);
   const selectedTranslation = TRANSLATIONS.find(t => t.id === translationId) || TRANSLATIONS[0];
-
-  React.useEffect(() => {
-    configureAudio();
-    loadBestVoice();
-  }, []);
 
   React.useEffect(() => {
     if (params.bookId && params.chapter) {
@@ -42,51 +36,6 @@ export default function ReaderScreen() {
     }
   }, [params.bookId, params.chapter]);
 
-  const configureAudio = async () => {
-    try {
-      await Audio.setAudioModeAsync({
-        playsInSilentModeIOS: true,
-        staysActiveInBackground: false,
-        shouldDuckAndroid: true,
-      });
-    } catch (e) {
-      console.log('Error configuring audio:', e);
-    }
-  };
-
-  const loadBestVoice = async () => {
-    try {
-      const voices = await Speech.getAvailableVoicesAsync();
-      if (voices.length > 0) {
-        // Prioritize English voices
-        const englishVoices = voices.filter(v => v.language.startsWith('en'));
-
-        // Try to find an enhanced/premium voice
-        // iOS often has 'Enhanced' in the name or specific high quality identifiers
-        let bestVoice = englishVoices.find(v =>
-          v.quality === 'Enhanced' ||
-          v.name.includes('Enhanced') ||
-          v.identifier.includes('siri')
-        );
-
-        // Fallback to any English voice
-        if (!bestVoice) {
-          bestVoice = englishVoices[0];
-        }
-
-        // Fallback to any voice
-        if (!bestVoice) {
-          bestVoice = voices[0];
-        }
-
-        setVoice(bestVoice);
-        console.log('Selected voice:', bestVoice.name, bestVoice.identifier);
-      }
-    } catch (e) {
-      console.log('Error loading voices:', e);
-    }
-  };
-
   const handleSelection = (newBookId: number, newChapter: number) => {
     setBookId(newBookId);
     setChapter(newChapter);
@@ -94,39 +43,16 @@ export default function ReaderScreen() {
     stopSpeech();
   };
 
-  const stopSpeech = async () => {
-    const speaking = await Speech.isSpeakingAsync();
-    if (speaking) {
-      Speech.stop();
-      setIsSpeaking(false);
-    }
-  };
-
   const toggleSpeech = async () => {
-    const speaking = await Speech.isSpeakingAsync();
-
-    if (speaking) {
-      await stopSpeech();
-    } else {
-      setIsSpeaking(true);
-      const textToRead = verses.map(v => v.text).join(' ');
-      Speech.speak(textToRead, {
-        voice: voice?.identifier,
-        rate: 0.9, // Slightly slower for better comprehension
-        pitch: 1.0,
-        onDone: () => setIsSpeaking(false),
-        onStopped: () => setIsSpeaking(false),
-        onError: () => setIsSpeaking(false),
-      });
-    }
+    const textToRead = verses.map(v => v.text).join(' ');
+    await speak(textToRead);
   };
 
-  // Stop speech when leaving the screen or changing chapters
   React.useEffect(() => {
     return () => {
       stopSpeech();
     };
-  }, [bookId, chapter]);
+  }, [bookId, chapter, stopSpeech]);
 
   const handleNextChapter = () => {
     if (!currentBook) return;
