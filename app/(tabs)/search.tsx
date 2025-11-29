@@ -8,15 +8,19 @@ import { useRouter } from 'expo-router';
 import { useBibleSearch, SearchResult } from '../../hooks/useBibleSearch';
 import { parseReference } from '../../utils/bibleReferenceParser';
 import { ProfileButton } from '../../components/ProfileButton';
+import { useSearchHistory } from '../../hooks/useSearchHistory';
 
 export default function SearchScreen() {
   const router = useRouter();
   const [query, setQuery] = useState('');
   const { search, results, loading, error } = useBibleSearch();
+  const { history, saveSearch } = useSearchHistory();
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (query.trim()) {
-      search(query);
+      await search(query);
+      // Save to history after search completes
+      saveSearch(query, results.length);
     }
   };
 
@@ -86,19 +90,24 @@ export default function SearchScreen() {
               {/* Recent Searches */}
               <Text className="text-sm font-bold mb-4 uppercase tracking-wider text-text-secondary">Recent Searches</Text>
               <View className="mb-8">
-                {['John 3:16', 'Love is patient', 'Psalms 23'].map((item, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    className="flex-row items-center py-3 border-b border-gray-800"
-                    onPress={() => {
-                      setQuery(item);
-                      search(item);
-                    }}
-                  >
-                    <Clock size={16} color="#666" />
-                    <Text className="ml-3 flex-1 text-text-primary">{item}</Text>
-                    <ArrowRight size={16} color="#666" />
-                  </TouchableOpacity>
+                {history.length > 0 ? (
+                  history.map((item) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      className="flex-row items-center py-3 border-b border-gray-800"
+                      onPress={() => {
+                        setQuery(item.query);
+                        search(item.query);
+                      }}
+                    >
+                      <Clock size={16} color="#666" />
+                      <Text className="ml-3 flex-1 text-text-primary">{item.query}</Text>
+                      <ArrowRight size={16} color="#666" />
+                    </TouchableOpacity>
+                  ))
+                ) : (
+                  <Text className="text-text-secondary text-center py-4">No recent searches</Text>
+                )}
                 ))}
               </View>
 
