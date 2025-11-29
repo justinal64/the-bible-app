@@ -36,6 +36,12 @@ export default function ReaderScreen() {
     }
   }, [params.bookId, params.chapter]);
 
+  React.useEffect(() => {
+    return () => {
+      stopSpeech();
+    };
+  }, [bookId, chapter, stopSpeech]);
+
   const handleSelection = (newBookId: number, newChapter: number) => {
     setBookId(newBookId);
     setChapter(newChapter);
@@ -48,11 +54,6 @@ export default function ReaderScreen() {
     await speak(textToRead);
   };
 
-  React.useEffect(() => {
-    return () => {
-      stopSpeech();
-    };
-  }, [bookId, chapter, stopSpeech]);
 
   const handleNextChapter = () => {
     if (!currentBook) return;
