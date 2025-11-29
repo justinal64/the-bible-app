@@ -3,7 +3,7 @@ import { View, Text, TextInput, ScrollView, TouchableOpacity, ActivityIndicator,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { GlassCard } from '../../components/ui/GlassCard';
-import { Search as SearchIcon, Clock, ArrowRight } from 'lucide-react-native';
+import { Clock, ArrowRight } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useBibleSearch, SearchResult } from '../../hooks/useBibleSearch';
 import { parseReference } from '../../utils/bibleReferenceParser';
@@ -58,12 +58,12 @@ export default function SearchScreen() {
           </View>
 
           {/* Search Bar */}
-          <GlassCard style={{ flexDirection: 'row', alignItems: 'center', padding: 12, borderRadius: 12, marginBottom: 16 }}>
-            <SearchIcon size={20} color="#A0A0B0" />
+          <GlassCard style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 12, borderRadius: 12, marginBottom: 16 }}>
             <TextInput
               placeholder="Search for verses, books..."
               placeholderTextColor="#A0A0B0"
               className="flex-1 ml-3 text-text-primary text-base"
+              style={{ paddingVertical: 0, includeFontPadding: false, textAlignVertical: 'center' }}
               value={query}
               onChangeText={setQuery}
               onSubmitEditing={handleSearch}

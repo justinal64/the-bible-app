@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Animated, FlatList } from 'react-native';
-import { ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react-native';
-import { GlassCard } from './ui/GlassCard';
+import { View, Text, TouchableOpacity, ActivityIndicator, Animated, FlatList } from 'react-native';
 import { FloatingNavigation } from './FloatingNavigation';
 import { useTheme } from '../contexts/ThemeContext';
 import { BibleVerse } from '../types/bible';
+import { useScrollToVerse } from '../hooks/useScrollToVerse';
 
 interface BibleReaderProps {
   verses: BibleVerse[];
@@ -30,11 +29,20 @@ export function BibleReader({
   isSpeaking = false,
   scrollToVerse,
 }: BibleReaderProps & { scrollToVerse?: number }) {
-  const { colors, fontSizes, lineSpacingValue, verseNumbersVisible } = useTheme();
+  const { fontSizes, lineSpacingValue, verseNumbersVisible } = useTheme();
   const flatListRef = useRef<FlatList>(null);
+  const [scrollProgress, setScrollProgress] = React.useState(0);
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  // Scroll to verse when verses load or scrollToVerse changes
+  useScrollToVerse({
+    flatListRef,
+    verses,
+    loading,
+    scrollToVerse,
+  });
 
   useEffect(() => {
     if (!loading) {
@@ -45,27 +53,7 @@ export function BibleReader({
         useNativeDriver: true,
       }).start();
     }
-  }, [loading, verses]);
-
-  // Scroll to verse when verses load or scrollToVerse changes
-  useEffect(() => {
-    if (!loading && verses.length > 0 && scrollToVerse && flatListRef.current) {
-      // Find index of the verse
-      const index = verses.findIndex(v => v.verse === scrollToVerse);
-      if (index !== -1) {
-        // Small timeout to ensure layout is ready
-        setTimeout(() => {
-          flatListRef.current?.scrollToIndex({
-            index,
-            animated: true,
-            viewPosition: 0.1 // Show near top
-          });
-        }, 500);
-      }
-    }
-  }, [loading, verses, scrollToVerse]);
-
-  const [scrollProgress, setScrollProgress] = React.useState(0);
+  }, [loading, fadeAnim]);
 
   const handleScroll = (event: any) => {
     const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
