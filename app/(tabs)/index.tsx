@@ -26,9 +26,11 @@ export default function DashboardScreen() {
             </View>
             <View className="flex-row items-center gap-3">
               {streak && (
-                <GlassCard style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, gap: 6 }}>
-                  <Flame size={16} color="#D4AF37" fill="#D4AF37" />
-                  <Text className="text-gold font-bold">{streak.current_streak}</Text>
+                <GlassCard style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center', borderRadius: 20, padding: 0 }}>
+                  <View className="items-center justify-center">
+                    <Flame size={16} color="#D4AF37" fill="#D4AF37" />
+                    <Text className="text-[10px] font-bold text-gold mt-[2px]">{streak.current_streak}</Text>
+                  </View>
                 </GlassCard>
               )}
               <ProfileButton />
