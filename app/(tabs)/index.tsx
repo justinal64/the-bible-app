@@ -6,10 +6,13 @@ import { GlassCard } from '../../components/ui/GlassCard';
 import { useDailyVerse } from '../../hooks/useDailyVerse';
 import { useDailyPrayer } from '../../hooks/useDailyPrayer';
 import { ProfileButton } from '../../components/ProfileButton';
+import { useUserStreak } from '../../hooks/useUserStreak';
+import { Flame } from 'lucide-react-native';
 
 export default function DashboardScreen() {
   const dailyVerse = useDailyVerse();
   const dailyPrayer = useDailyPrayer();
+  const { streak } = useUserStreak();
 
   return (
     <GalaxyBackground>
@@ -21,7 +24,15 @@ export default function DashboardScreen() {
               <Text className="text-sm font-medium mb-1 text-text-secondary">Welcome back</Text>
               <Text className="text-2xl font-bold text-text-primary">Home Dashboard</Text>
             </View>
-            <ProfileButton />
+            <View className="flex-row items-center gap-3">
+              {streak && (
+                <GlassCard style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, gap: 6 }}>
+                  <Flame size={16} color="#D4AF37" fill="#D4AF37" />
+                  <Text className="text-gold font-bold">{streak.current_streak}</Text>
+                </GlassCard>
+              )}
+              <ProfileButton />
+            </View>
           </View>
 
           {/* Daily Verse */}
