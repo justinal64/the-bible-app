@@ -108,7 +108,6 @@ export default function SearchScreen() {
                 ) : (
                   <Text className="text-text-secondary text-center py-4">No recent searches</Text>
                 )}
-                ))}
               </View>
 
               {/* Categories */}
