@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Modal, TouchableOpacity, Text, Alert } from 'react-native';
+import { View, Modal, TouchableOpacity, Text, Alert, Share } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { BibleReader } from '../../components/BibleReader';
@@ -7,7 +7,7 @@ import { BookSelector } from '../../components/BookSelector';
 import { TranslationSelector, TRANSLATIONS } from '../../components/TranslationSelector';
 import { TextSettingsModal } from '../../components/TextSettingsModal';
 import { BIBLE_BOOKS } from '../../constants/bibleBooks';
-import { Search, Type, ChevronDown, Copy, X } from 'lucide-react-native';
+import { Search, Type, ChevronDown, Copy, X, Share as ShareIcon } from 'lucide-react-native';
 import { Button } from '../../components/ui/Button';
 import { ProfileButton } from '../../components/ProfileButton';
 import { useBibleVerses } from '../../hooks/useBibleVerses';
@@ -103,8 +103,8 @@ export default function ReaderScreen() {
     setSelectedVerses(new Set());
   };
 
-  const handleCopy = async () => {
-    if (selectedVerses.size === 0 || !currentBook) return;
+  const getSelectedContent = () => {
+    if (selectedVerses.size === 0 || !currentBook) return null;
 
     const sortedVerseNumbers = Array.from(selectedVerses).sort((a, b) => a - b);
     const selectedText = sortedVerseNumbers
@@ -115,11 +115,30 @@ export default function ReaderScreen() {
       .join('\n');
 
     const reference = `${currentBook.name} ${chapter}:${sortedVerseNumbers.join(',')}`;
-    const clipboardContent = `${reference}\n${selectedText}\n(${selectedTranslation.abbreviation})`;
+    return `${reference}\n${selectedText}\n(${selectedTranslation.abbreviation})`;
+  };
 
-    await Clipboard.setStringAsync(clipboardContent);
+  const handleCopy = async () => {
+    const content = getSelectedContent();
+    if (!content) return;
+
+    await Clipboard.setStringAsync(content);
     Alert.alert('Copied', 'Verses copied to clipboard');
     handleClearSelection();
+  };
+
+  const handleShare = async () => {
+    const content = getSelectedContent();
+    if (!content) return;
+
+    try {
+      await Share.share({
+        message: content,
+      });
+      handleClearSelection();
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
   };
 
   return (
@@ -183,14 +202,24 @@ export default function ReaderScreen() {
                     {selectedVerses.size} selected
                   </Text>
                 </View>
-                <TouchableOpacity
-                  onPress={handleCopy}
-                  className="flex-row items-center bg-gold/20 px-4 py-2 rounded-full"
-                  style={{ backgroundColor: theme === 'light' ? 'rgba(212, 175, 55, 0.2)' : 'rgba(212, 175, 55, 0.2)' }}
-                >
-                  <Copy size={20} color="#D4AF37" className="mr-2" />
-                  <Text className="font-bold text-gold ml-2">Copy</Text>
-                </TouchableOpacity>
+                <View className="flex-row gap-2">
+                  <TouchableOpacity
+                    onPress={handleShare}
+                    className="flex-row items-center bg-gold/20 px-4 py-2 rounded-full"
+                    style={{ backgroundColor: theme === 'light' ? 'rgba(212, 175, 55, 0.2)' : 'rgba(212, 175, 55, 0.2)' }}
+                  >
+                    <ShareIcon size={20} color="#D4AF37" className="mr-2" />
+                    <Text className="font-bold text-gold ml-2">Share</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={handleCopy}
+                    className="flex-row items-center bg-gold/20 px-4 py-2 rounded-full"
+                    style={{ backgroundColor: theme === 'light' ? 'rgba(212, 175, 55, 0.2)' : 'rgba(212, 175, 55, 0.2)' }}
+                  >
+                    <Copy size={20} color="#D4AF37" className="mr-2" />
+                    <Text className="font-bold text-gold ml-2">Copy</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </GlassCard>
           </View>
