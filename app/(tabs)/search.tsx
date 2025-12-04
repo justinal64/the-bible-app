@@ -3,18 +3,20 @@ import { View, Text, TextInput, ScrollView, TouchableOpacity, ActivityIndicator,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { GlassCard } from '../../components/ui/GlassCard';
-import { Clock, ArrowRight } from 'lucide-react-native';
+import { Clock, ArrowRight, Search as SearchIcon } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useBibleSearch, SearchResult } from '../../hooks/useBibleSearch';
 import { parseReference } from '../../utils/bibleReferenceParser';
 import { ProfileButton } from '../../components/ProfileButton';
 import { useSearchHistory } from '../../hooks/useSearchHistory';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export default function SearchScreen() {
   const router = useRouter();
   const [query, setQuery] = useState('');
   const { search, results, loading, error } = useBibleSearch();
   const { history, saveSearch } = useSearchHistory();
+  const { colors, theme } = useTheme();
 
   const handleSearch = async () => {
     if (query.trim()) {
@@ -47,7 +49,7 @@ export default function SearchScreen() {
     >
       <GlassCard style={{ padding: 16, borderRadius: 12 }}>
         <Text className="text-gold font-bold mb-1">{item.reference}</Text>
-        <Text className="text-text-primary leading-6" numberOfLines={3}>{item.text}</Text>
+        <Text className="leading-6" numberOfLines={3} style={{ color: colors.text }}>{item.text}</Text>
       </GlassCard>
     </TouchableOpacity>
   );
@@ -57,17 +59,18 @@ export default function SearchScreen() {
       <SafeAreaView className="flex-1" edges={['top']}>
         <View className="flex-1 px-4 py-4">
           <View className="flex-row justify-between items-center mb-6">
-            <Text className="text-2xl font-bold text-text-primary">Search</Text>
+            <Text className="text-2xl font-bold" style={{ color: colors.text }}>Search</Text>
             <ProfileButton />
           </View>
 
           {/* Search Bar */}
           <GlassCard style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 12, borderRadius: 12, marginBottom: 16 }}>
+            <SearchIcon size={20} color={colors.textSecondary} style={{ marginTop: -2 }} />
             <TextInput
               placeholder="Search for verses, books..."
-              placeholderTextColor="#A0A0B0"
-              className="flex-1 ml-3 text-text-primary text-base"
-              style={{ paddingVertical: 0, includeFontPadding: false, textAlignVertical: 'center' }}
+              placeholderTextColor={colors.textSecondary}
+              className="flex-1 ml-3 text-base"
+              style={{ paddingVertical: 0, includeFontPadding: false, textAlignVertical: 'center', color: colors.text }}
               value={query}
               onChangeText={setQuery}
               onSubmitEditing={handleSearch}
@@ -88,30 +91,31 @@ export default function SearchScreen() {
           ) : (
             <ScrollView>
               {/* Recent Searches */}
-              <Text className="text-sm font-bold mb-4 uppercase tracking-wider text-text-secondary">Recent Searches</Text>
+              <Text className="text-sm font-bold mb-4 uppercase tracking-wider" style={{ color: colors.textSecondary }}>Recent Searches</Text>
               <View className="mb-8">
                 {history.length > 0 ? (
                   history.map((item) => (
                     <TouchableOpacity
                       key={item.id}
                       className="flex-row items-center py-3 border-b border-gray-800"
+                      style={{ borderColor: theme === 'light' ? '#E5E5E5' : '#1F2937' }}
                       onPress={() => {
                         setQuery(item.query);
                         search(item.query);
                       }}
                     >
-                      <Clock size={16} color="#666" />
-                      <Text className="ml-3 flex-1 text-text-primary">{item.query}</Text>
-                      <ArrowRight size={16} color="#666" />
+                      <Clock size={16} color={colors.textSecondary} />
+                      <Text className="ml-3 flex-1" style={{ color: colors.text }}>{item.query}</Text>
+                      <ArrowRight size={16} color={colors.textSecondary} />
                     </TouchableOpacity>
                   ))
                 ) : (
-                  <Text className="text-text-secondary text-center py-4">No recent searches</Text>
+                  <Text className="text-center py-4" style={{ color: colors.textSecondary }}>No recent searches</Text>
                 )}
               </View>
 
               {/* Categories */}
-              <Text className="text-sm font-bold mb-4 uppercase tracking-wider text-text-secondary">Browse by Topic</Text>
+              <Text className="text-sm font-bold mb-4 uppercase tracking-wider" style={{ color: colors.textSecondary }}>Browse by Topic</Text>
               <View className="flex-row flex-wrap gap-3">
                 {['Love', 'Hope', 'Faith', 'Peace', 'Healing', 'Wisdom'].map((tag, index) => (
                   <TouchableOpacity
@@ -122,7 +126,7 @@ export default function SearchScreen() {
                     }}
                   >
                     <GlassCard style={{ paddingVertical: 8, paddingHorizontal: 16, borderRadius: 20 }}>
-                      <Text className="text-text-primary">{tag}</Text>
+                      <Text style={{ color: colors.text }}>{tag}</Text>
                     </GlassCard>
                   </TouchableOpacity>
                 ))}

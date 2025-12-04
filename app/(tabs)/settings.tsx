@@ -11,38 +11,41 @@ import { Moon, Type, Bell, ChevronRight, Shield, LogOut, User } from 'lucide-rea
 import { ProfileButton } from '../../components/ProfileButton';
 
 export default function SettingsScreen() {
-  const SettingItem = ({ icon, label, value, type = 'toggle' }: any) => (
-    <View className="flex-row items-center justify-between py-4 border-b border-gray-800">
-      <View className="flex-row items-center">
-        <View className="w-8 h-8 items-center justify-center rounded-full bg-gray-800 mr-3">
-          {icon}
-        </View>
-        <Text className="text-base text-text-primary">{label}</Text>
-      </View>
-      {type === 'toggle' ? (
-        <Switch
-          value={value}
-          trackColor={{ false: '#333', true: '#D4AF37' }}
-          thumbColor="#FFF"
-        />
-      ) : (
-        <ChevronRight size={20} color="#666" />
-      )}
-    </View>
-  );
+
 
   const [showTextSettings, setShowTextSettings] = React.useState(false);
   const [showLoginModal, setShowLoginModal] = React.useState(false);
   const [showEditProfileModal, setShowEditProfileModal] = React.useState(false);
-  const { fontSize, setFontSize } = useTheme();
+  const { fontSize, setFontSize, theme, toggleTheme, colors } = useTheme();
   const { user, signOut } = useAuth();
+
+  const SettingItem = ({ icon, label, value, onValueChange, type = 'toggle' }: any) => (
+    <View className="flex-row items-center justify-between py-4 border-b border-gray-800" style={{ borderColor: theme === 'light' ? '#E5E5E5' : '#1F2937' }}>
+      <View className="flex-row items-center">
+        <View className={`w-8 h-8 items-center justify-center rounded-full mr-3 ${theme === 'light' ? 'bg-gray-200' : 'bg-gray-800'}`}>
+          {React.cloneElement(icon, { color: theme === 'light' ? '#000' : '#FFF' })}
+        </View>
+        <Text className="text-base" style={{ color: colors.text }}>{label}</Text>
+      </View>
+      {type === 'toggle' ? (
+        <Switch
+          value={value}
+          onValueChange={onValueChange}
+          trackColor={{ false: '#333', true: '#D4AF37' }}
+          thumbColor="#FFF"
+        />
+      ) : (
+        <ChevronRight size={20} color={theme === 'light' ? '#666' : '#666'} />
+      )}
+    </View>
+  );
 
   return (
     <GalaxyBackground>
       <SafeAreaView className="flex-1" edges={['top']}>
         <ScrollView contentContainerClassName="p-5">
           <View className="flex-row justify-between items-center mb-8">
-            <Text className="text-2xl font-bold text-text-primary">Settings</Text>
+            <Text className="text-2xl font-bold" style={{ color: colors.text }}>Settings</Text>
             <ProfileButton />
           </View>
 
@@ -50,17 +53,18 @@ export default function SettingsScreen() {
             <View className="p-4">
               <Text className="text-xs font-bold uppercase mb-2 text-gold">Appearance</Text>
               <SettingItem
-                icon={<Moon size={18} color="#FFF" />}
+                icon={<Moon size={18} />}
                 label="Dark Mode"
-                value={true}
+                value={theme === 'dark'}
+                onValueChange={toggleTheme}
               />
               <TouchableOpacity onPress={() => setShowTextSettings(true)}>
-                <View className="flex-row items-center justify-between py-4 border-b border-gray-800">
+                <View className="flex-row items-center justify-between py-4 border-b border-gray-800" style={{ borderColor: theme === 'light' ? '#E5E5E5' : '#1F2937' }}>
                   <View className="flex-row items-center">
-                    <View className="w-8 h-8 items-center justify-center rounded-full bg-gray-800 mr-3">
-                      <Type size={18} color="#FFF" />
+                    <View className={`w-8 h-8 items-center justify-center rounded-full mr-3 ${theme === 'light' ? 'bg-gray-200' : 'bg-gray-800'}`}>
+                      <Type size={18} color={theme === 'light' ? '#000' : '#FFF'} />
                     </View>
-                    <Text className="text-base text-text-primary">Text Size</Text>
+                    <Text className="text-base" style={{ color: colors.text }}>Text Size</Text>
                   </View>
                   <View className="flex-row items-center">
                     <Text className="text-gray-400 mr-2 capitalize">{fontSize}</Text>
@@ -75,7 +79,7 @@ export default function SettingsScreen() {
             <View className="p-4">
               <Text className="text-xs font-bold uppercase mb-2 text-gold">Notifications</Text>
               <SettingItem
-                icon={<Bell size={18} color="#FFF" />}
+                icon={<Bell size={18} />}
                 label="Daily Verse"
                 value={true}
               />
@@ -89,13 +93,13 @@ export default function SettingsScreen() {
               {user ? (
                 <>
                   <TouchableOpacity onPress={() => setShowEditProfileModal(true)}>
-                    <View className="flex-row items-center justify-between py-4 border-b border-gray-800">
+                    <View className="flex-row items-center justify-between py-4 border-b border-gray-800" style={{ borderColor: theme === 'light' ? '#E5E5E5' : '#1F2937' }}>
                       <View className="flex-row items-center">
-                        <View className="w-8 h-8 items-center justify-center rounded-full bg-gray-800 mr-3">
-                          <User size={18} color="#FFF" />
+                        <View className={`w-8 h-8 items-center justify-center rounded-full mr-3 ${theme === 'light' ? 'bg-gray-200' : 'bg-gray-800'}`}>
+                          <User size={18} color={theme === 'light' ? '#000' : '#FFF'} />
                         </View>
                         <View>
-                          <Text className="text-base text-text-primary">
+                          <Text className="text-base" style={{ color: colors.text }}>
                             {user.user_metadata?.first_name && user.user_metadata?.last_name
                               ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
                               : 'Profile (Tap to edit)'}
@@ -108,10 +112,10 @@ export default function SettingsScreen() {
                   </TouchableOpacity>
 
                   <TouchableOpacity onPress={signOut}>
-                    <View className="flex-row items-center justify-between py-4 border-b border-gray-800">
+                    <View className="flex-row items-center justify-between py-4 border-b border-gray-800" style={{ borderColor: theme === 'light' ? '#E5E5E5' : '#1F2937' }}>
                       <View className="flex-row items-center">
-                        <View className="w-8 h-8 items-center justify-center rounded-full bg-gray-800 mr-3">
-                          <LogOut size={18} color="#FFF" />
+                        <View className={`w-8 h-8 items-center justify-center rounded-full mr-3 ${theme === 'light' ? 'bg-gray-200' : 'bg-gray-800'}`}>
+                          <LogOut size={18} color={theme === 'light' ? '#000' : '#FFF'} />
                         </View>
                         <Text className="text-base text-red-400">Sign Out</Text>
                       </View>
@@ -121,12 +125,12 @@ export default function SettingsScreen() {
                 </>
               ) : (
                 <TouchableOpacity onPress={() => setShowLoginModal(true)}>
-                  <View className="flex-row items-center justify-between py-4 border-b border-gray-800">
+                  <View className="flex-row items-center justify-between py-4 border-b border-gray-800" style={{ borderColor: theme === 'light' ? '#E5E5E5' : '#1F2937' }}>
                     <View className="flex-row items-center">
-                      <View className="w-8 h-8 items-center justify-center rounded-full bg-gray-800 mr-3">
-                        <User size={18} color="#FFF" />
+                      <View className={`w-8 h-8 items-center justify-center rounded-full mr-3 ${theme === 'light' ? 'bg-gray-200' : 'bg-gray-800'}`}>
+                        <User size={18} color={theme === 'light' ? '#000' : '#FFF'} />
                       </View>
-                      <Text className="text-base text-text-primary">Login / Sign Up</Text>
+                      <Text className="text-base" style={{ color: colors.text }}>Login / Sign Up</Text>
                     </View>
                     <ChevronRight size={20} color="#666" />
                   </View>
@@ -134,7 +138,7 @@ export default function SettingsScreen() {
               )}
 
               <SettingItem
-                icon={<Shield size={18} color="#FFF" />}
+                icon={<Shield size={18} />}
                 label="Privacy Policy"
                 type="link"
               />

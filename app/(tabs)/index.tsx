@@ -8,11 +8,13 @@ import { useDailyPrayer } from '../../hooks/useDailyPrayer';
 import { ProfileButton } from '../../components/ProfileButton';
 import { useUserStreak } from '../../hooks/useUserStreak';
 import { Flame } from 'lucide-react-native';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export default function DashboardScreen() {
   const dailyVerse = useDailyVerse();
   const dailyPrayer = useDailyPrayer();
   const { streak } = useUserStreak();
+  const { colors, theme } = useTheme();
 
   return (
     <GalaxyBackground>
@@ -21,8 +23,8 @@ export default function DashboardScreen() {
           {/* Header */}
           <View className="flex-row justify-between items-center mb-8 px-4">
             <View>
-              <Text className="text-sm font-medium mb-1 text-text-secondary">Welcome back</Text>
-              <Text className="text-2xl font-bold text-text-primary">Home Dashboard</Text>
+              <Text className="text-sm font-medium mb-1" style={{ color: colors.textSecondary }}>Welcome back</Text>
+              <Text className="text-2xl font-bold" style={{ color: colors.text }}>Home Dashboard</Text>
             </View>
             <View className="flex-row items-center gap-3">
               {streak && (
@@ -40,8 +42,8 @@ export default function DashboardScreen() {
           {/* Daily Verse */}
           <View className="px-4 mb-8">
             <View className="flex-row justify-between items-center mb-4">
-              <Text className="text-lg font-bold text-text-primary">Daily Verse</Text>
-              <Text className="text-xs text-text-secondary">Today</Text>
+              <Text className="text-lg font-bold" style={{ color: colors.text }}>Daily Verse</Text>
+              <Text className="text-xs" style={{ color: colors.textSecondary }}>Today</Text>
             </View>
             <GlassCard style={{ height: 200, padding: 0, overflow: 'hidden' }}>
               <Image
@@ -51,7 +53,7 @@ export default function DashboardScreen() {
               />
               <View className="absolute inset-0 bg-black/40" />
               <View className="flex-1 justify-end p-6">
-                <Text className="text-xl font-serif italic mb-2 text-text-primary" style={{ color: '#FFFFFF' }}>
+                <Text className="text-xl font-serif italic mb-2 text-white" style={{ color: '#FFFFFF' }}>
                   "{dailyVerse.text}"
                 </Text>
                 <Text className="font-bold text-gold">{dailyVerse.reference}</Text>
@@ -62,10 +64,10 @@ export default function DashboardScreen() {
           {/* Daily Prayer */}
           <View className="px-4 mb-8">
             <View className="flex-row justify-between items-center mb-4">
-              <Text className="text-lg font-bold text-text-primary">Daily Prayer</Text>
+              <Text className="text-lg font-bold" style={{ color: colors.text }}>Daily Prayer</Text>
             </View>
             <GlassCard style={{ padding: 20 }}>
-              <Text className="text-lg font-serif italic mb-4 text-text-primary leading-7">
+              <Text className="text-lg font-serif italic mb-4 leading-7" style={{ color: colors.text }}>
                 "{dailyPrayer.text}"
               </Text>
               <Text className="font-bold text-gold text-right">- {dailyPrayer.title}</Text>

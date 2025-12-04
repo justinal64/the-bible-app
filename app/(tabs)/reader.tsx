@@ -7,12 +7,13 @@ import { BookSelector } from '../../components/BookSelector';
 import { TranslationSelector, TRANSLATIONS } from '../../components/TranslationSelector';
 import { TextSettingsModal } from '../../components/TextSettingsModal';
 import { BIBLE_BOOKS } from '../../constants/bibleBooks';
-import { Search, Type } from 'lucide-react-native';
+import { Search, Type, ChevronDown } from 'lucide-react-native';
 import { Button } from '../../components/ui/Button';
 import { ProfileButton } from '../../components/ProfileButton';
 import { useBibleVerses } from '../../hooks/useBibleVerses';
 import { useTextToSpeech } from '../../hooks/useTextToSpeech';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export default function ReaderScreen() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function ReaderScreen() {
 
   const { verses, loading } = useBibleVerses({ bookId, chapter, translationId });
   const { isSpeaking, speak, stopSpeech } = useTextToSpeech();
+  const { colors } = useTheme();
 
   const currentBook = BIBLE_BOOKS.find(b => b.id === bookId);
   const selectedTranslation = TRANSLATIONS.find(t => t.id === translationId) || TRANSLATIONS[0];
@@ -80,44 +82,37 @@ export default function ReaderScreen() {
 
   return (
     <GalaxyBackground>
-      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
-        <View className="px-4 py-2 flex-row justify-between items-center">
-          {/* Segmented Control */}
-          <View className="flex-row bg-white/10 rounded-full items-center border border-white/10 overflow-hidden">
-            <TouchableOpacity
-              className="px-4 py-2 flex-row items-center"
-              onPress={() => setShowBookSelector(true)}
-            >
-              <Text className="text-white font-semibold text-base">
-                {currentBook?.name} {chapter}
-              </Text>
-            </TouchableOpacity>
+      <SafeAreaView className="flex-1" edges={['top']}>
+        {/* Header */}
+        <View className="flex-row items-center justify-between px-4 py-2 border-b border-white/10">
+          <TouchableOpacity
+            onPress={() => setShowBookSelector(true)}
+            className="flex-row items-center"
+          >
+            <Text className="text-xl font-bold mr-2" style={{ color: colors.text }}>
+              {currentBook ? currentBook.name : 'Select Book'} {chapter}
+            </Text>
+            <ChevronDown size={20} color={colors.textSecondary} />
+          </TouchableOpacity>
 
-            {/* Divider */}
-            <View className="w-[1px] h-5 bg-white/20" />
-
+          <View className="flex-row items-center gap-4">
             <TranslationSelector
               selectedTranslationId={translationId}
               onTranslationChange={setTranslationId}
             >
-              <View className="px-4 py-2 flex-row items-center">
-                <Text className="text-white font-semibold text-base">
+              <View className="flex-row items-center">
+                <Text className="font-semibold text-base" style={{ color: colors.text }}>
                   {selectedTranslation.abbreviation}
                 </Text>
               </View>
             </TranslationSelector>
-          </View>
-
-          {/* Right Icons */}
-          <View className="flex-row gap-5 items-center">
             <TouchableOpacity onPress={() => setShowTextSettings(true)}>
-              <Type size={24} color="#FFFFFF" />
+              <Type size={24} color={colors.text} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push('/search')}>
-              <Search size={24} color="#FFFFFF" />
+              <Search size={24} color={colors.text} />
             </TouchableOpacity>
             <ProfileButton />
-
           </View>
         </View>
 
@@ -137,15 +132,17 @@ export default function ReaderScreen() {
           animationType="slide"
           presentationStyle="pageSheet"
         >
-          <SafeAreaView className="flex-1 bg-galaxy-bg" edges={['top']}>
-            <View className="p-4 flex-row justify-end">
-              <Button title="Close" onPress={() => setShowBookSelector(false)} variant="ghost" size="sm" />
-            </View>
-            <BookSelector
-              onSelect={handleSelection}
-              currentBookId={bookId}
-            />
-          </SafeAreaView>
+          <GalaxyBackground>
+            <SafeAreaView className="flex-1" edges={['top']}>
+              <View className="p-4 flex-row justify-end">
+                <Button title="Close" onPress={() => setShowBookSelector(false)} variant="ghost" size="sm" />
+              </View>
+              <BookSelector
+                onSelect={handleSelection}
+                currentBookId={bookId}
+              />
+            </SafeAreaView>
+          </GalaxyBackground>
         </Modal>
 
         <TextSettingsModal

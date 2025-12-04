@@ -7,7 +7,15 @@ interface GalaxyBackgroundProps {
 }
 
 export function GalaxyBackground({ children }: GalaxyBackgroundProps) {
-  const { colors } = useTheme();
+  const { theme } = useTheme();
+
+  if (theme === 'light') {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#F5F5F7' }}>
+        {children}
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1 }} className="bg-galaxy-bg">

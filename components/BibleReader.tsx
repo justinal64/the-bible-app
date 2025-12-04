@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, Animated, FlatList } from 'react-native';
 import { FloatingNavigation } from './FloatingNavigation';
 import { useTheme } from '../contexts/ThemeContext';
@@ -29,7 +29,7 @@ export function BibleReader({
   isSpeaking = false,
   scrollToVerse,
 }: BibleReaderProps & { scrollToVerse?: number }) {
-  const { fontSizes, lineSpacingValue, verseNumbersVisible } = useTheme();
+  const { fontSizes, lineSpacingValue, verseNumbersVisible, colors, theme } = useTheme();
   const flatListRef = useRef<FlatList>(null);
   const [scrollProgress, setScrollProgress] = React.useState(0);
 
@@ -62,38 +62,57 @@ export function BibleReader({
     setScrollProgress(Math.min(Math.max(progress, 0), 1));
   };
 
-  const renderItem = ({ item }: { item: BibleVerse }) => {
+  const renderItem = useCallback(({ item }: { item: BibleVerse }) => {
     const isHighlighted = highlightedVerses.has(item.verse);
     const isTargetVerse = scrollToVerse === item.verse;
+    const fontSize = fontSizes.base;
+    const lineHeight = fontSize * lineSpacingValue;
 
     return (
       <TouchableOpacity
         onPress={() => onVersePress?.(item.verse)}
         activeOpacity={0.7}
-        className={`mb-2 rounded-lg p-2 ${isHighlighted ? "bg-gold/20" : ""} ${isTargetVerse ? "bg-white/10 border border-gold/30" : ""}`}
       >
-        <Text
-          style={{ fontSize: fontSizes.base, lineHeight: fontSizes.base * lineSpacingValue }}
-          className="text-text-primary"
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            backgroundColor: isHighlighted
+              ? (theme === 'light' ? 'rgba(212, 175, 55, 0.2)' : 'rgba(212, 175, 55, 0.2)')
+              : isTargetVerse
+                ? (theme === 'light' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.1)')
+                : 'transparent',
+            paddingVertical: 8,
+            paddingHorizontal: 16,
+            marginBottom: 4,
+            borderRadius: 8,
+            borderColor: isTargetVerse ? 'rgba(212, 175, 55, 0.3)' : 'transparent',
+            borderWidth: isTargetVerse ? 1 : 0
+          }}
         >
-          {verseNumbersVisible && (
-            <Text
-              style={{ fontSize: fontSizes.sm }}
-              className="font-bold text-gold mr-2"
-            >
-              {item.verse}{' '}
-            </Text>
-          )}
-          {item.text}
-        </Text>
+          <Text
+            style={{
+              color: colors.text,
+              fontSize,
+              lineHeight,
+              fontFamily: 'CrimsonPro-Regular'
+            }}
+          >
+            {verseNumbersVisible && (
+              <Text style={{ fontSize: fontSize * 0.6, color: colors.textSecondary, fontWeight: 'bold' }}>
+                {item.verse}{' '}
+              </Text>
+            )}
+            {item.text}
+          </Text>
+        </Animated.View>
       </TouchableOpacity>
     );
-  };
+  }, [highlightedVerses, scrollToVerse, fontSizes, lineSpacingValue, verseNumbersVisible, onVersePress, fadeAnim, colors, theme]);
 
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#D4AF37" />
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }

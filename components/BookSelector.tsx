@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { BIBLE_BOOKS } from '../constants/bibleBooks';
 import { Button } from './ui/Button';
 import { ChevronLeft } from 'lucide-react-native';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface BookSelectorProps {
   onSelect: (bookId: number, chapter: number) => void;
@@ -12,6 +13,7 @@ interface BookSelectorProps {
 export function BookSelector({ onSelect, currentBookId }: BookSelectorProps) {
   const [selectedTestament, setSelectedTestament] = useState<'Old Testament' | 'New Testament'>('Old Testament');
   const [selectedBook, setSelectedBook] = useState<typeof BIBLE_BOOKS[0] | null>(null);
+  const { colors, theme } = useTheme();
 
   const oldTestamentBooks = BIBLE_BOOKS.filter(b => b.testament === 'Old Testament');
   const newTestamentBooks = BIBLE_BOOKS.filter(b => b.testament === 'New Testament');
@@ -34,11 +36,11 @@ export function BookSelector({ onSelect, currentBookId }: BookSelectorProps) {
   if (selectedBook) {
     return (
       <View className="flex-1 bg-transparent">
-        <View className="flex-row items-center p-4 border-b border-white/10">
+        <View className="flex-row items-center p-4 border-b border-white/10" style={{ borderBottomColor: theme === 'light' ? '#E5E5E5' : 'rgba(255, 255, 255, 0.1)' }}>
           <TouchableOpacity onPress={handleBack} className="mr-4">
-            <ChevronLeft size={24} color="#FFFFFF" />
+            <ChevronLeft size={24} color={colors.text} />
           </TouchableOpacity>
-          <Text className="text-white text-xl font-bold">{selectedBook.name}</Text>
+          <Text className="text-xl font-bold" style={{ color: colors.text }}>{selectedBook.name}</Text>
         </View>
 
         <ScrollView contentContainerClassName="p-4 pb-8">
@@ -47,9 +49,13 @@ export function BookSelector({ onSelect, currentBookId }: BookSelectorProps) {
               <TouchableOpacity
                 key={chapter}
                 onPress={() => handleChapterPress(chapter)}
-                className="w-16 h-16 justify-center items-center rounded-xl bg-galaxy-card/60 border border-white/10 active:bg-gold/20 active:border-gold/50"
+                className="w-16 h-16 justify-center items-center rounded-xl border"
+                style={{
+                  backgroundColor: theme === 'light' ? '#F0F0F0' : 'rgba(26, 26, 46, 0.6)',
+                  borderColor: theme === 'light' ? '#E5E5E5' : 'rgba(255, 255, 255, 0.1)'
+                }}
               >
-                <Text className="text-white text-lg font-semibold">{chapter}</Text>
+                <Text className="text-lg font-semibold" style={{ color: colors.text }}>{chapter}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -87,11 +93,15 @@ export function BookSelector({ onSelect, currentBookId }: BookSelectorProps) {
               key={book.id}
               onPress={() => handleBookPress(book)}
               activeOpacity={0.7}
-              className={`mb-3 flex-row justify-between items-center p-4 rounded-xl border ${
-                isActive
-                  ? 'bg-gold/20 border-gold/50'
-                  : 'bg-galaxy-card/60 border-white/10'
-              }`}
+              className={`mb-3 flex-row justify-between items-center p-4 rounded-xl border`}
+              style={{
+                backgroundColor: isActive
+                  ? (theme === 'light' ? 'rgba(212, 175, 55, 0.2)' : 'rgba(212, 175, 55, 0.2)')
+                  : (theme === 'light' ? '#F0F0F0' : 'rgba(26, 26, 46, 0.6)'),
+                borderColor: isActive
+                  ? (theme === 'light' ? 'rgba(212, 175, 55, 0.5)' : 'rgba(212, 175, 55, 0.5)')
+                  : (theme === 'light' ? '#E5E5E5' : 'rgba(255, 255, 255, 0.1)')
+              }}
             >
               <Text className={`text-base font-bold ${isActive ? 'text-white' : 'text-gray-200'}`}>
                 {book.name}
