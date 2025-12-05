@@ -6,14 +6,14 @@ import { useAuth } from '../../contexts/AuthContext';
 import { BookmarksList } from '../../components/BookmarksList';
 import { NotesList } from '../../components/NotesList';
 import { UserBookmark, UserNote } from '../../types/bible';
-import { Settings } from 'lucide-react-native';
+
 import { useRouter } from 'expo-router';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { ProfileButton } from '../../components/ProfileButton';
 import { GlassCard } from '../../components/ui/GlassCard';
 
 export default function BookmarksScreen() {
-  const { colors, fontSizes, theme } = useTheme();
+  const { colors, theme } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'bookmarks' | 'notes'>('bookmarks');
@@ -44,9 +44,7 @@ export default function BookmarksScreen() {
             <View className="flex-row justify-between items-center mb-4">
               <Text className="text-2xl font-bold" style={{ color: colors.text }}>Bookmarks & Notes</Text>
               <TouchableOpacity onPress={() => router.push('/settings')}>
-                <GlassCard style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center', borderRadius: 20 }}>
-                  <Settings size={20} color="#D4AF37" />
-                </GlassCard>
+                <ProfileButton />
               </TouchableOpacity>
             </View>
           </View>

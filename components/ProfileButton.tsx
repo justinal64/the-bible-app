@@ -6,13 +6,9 @@ import { GlassCard } from './ui/GlassCard';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 
-interface ProfileButtonProps {
-  variant?: 'default' | 'small';
-}
-
-export function ProfileButton({ variant = 'default' }: ProfileButtonProps) {
+export function ProfileButton() {
   const { user } = useAuth();
-  const { colors, theme } = useTheme();
+  const { colors } = useTheme();
 
   if (user) {
     return <UserAvatar />;

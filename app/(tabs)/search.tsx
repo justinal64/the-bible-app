@@ -14,7 +14,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 export default function SearchScreen() {
   const router = useRouter();
   const [query, setQuery] = useState('');
-  const { search, results, loading, error } = useBibleSearch();
+  const { search, results, loading } = useBibleSearch();
   const { history, saveSearch } = useSearchHistory();
   const { colors, theme } = useTheme();
 

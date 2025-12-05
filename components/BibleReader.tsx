@@ -10,7 +10,6 @@ interface BibleReaderProps {
   loading: boolean;
   onVersePress?: (verse: number) => void;
   highlightedVerses?: Set<number>;
-  bookmarkedVerses?: Set<number>;
   onNextChapter?: () => void;
   onPreviousChapter?: () => void;
   onToggleAudio?: () => void;
@@ -22,7 +21,6 @@ export function BibleReader({
   loading,
   onVersePress,
   highlightedVerses = new Set(),
-  bookmarkedVerses = new Set(),
   onNextChapter,
   onPreviousChapter,
   onToggleAudio,

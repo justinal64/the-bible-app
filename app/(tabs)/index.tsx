@@ -14,7 +14,7 @@ export default function DashboardScreen() {
   const dailyVerse = useDailyVerse();
   const dailyPrayer = useDailyPrayer();
   const { streak } = useUserStreak();
-  const { colors, theme } = useTheme();
+  const { colors } = useTheme();
 
   return (
     <GalaxyBackground>
@@ -53,7 +53,7 @@ export default function DashboardScreen() {
               />
               <View className="absolute inset-0 bg-black/40" />
               <View className="flex-1 justify-end p-6">
-                <Text className="text-xl font-serif italic mb-2 text-white" style={{ color: '#FFFFFF' }}>
+                <Text className="text-xl font-serif italic mb-2 text-white" style={{ color: colors.text }}>
                   "{dailyVerse.text}"
                 </Text>
                 <Text className="font-bold text-gold">{dailyVerse.reference}</Text>

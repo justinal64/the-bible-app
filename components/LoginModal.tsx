@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { BlurView } from 'expo-blur';
+import { Modal, View, Text, TextInput, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
+
 import { X, Mail, Lock, AlertCircle, User } from 'lucide-react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/Button';

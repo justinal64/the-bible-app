@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Modal, Switch } from 'react-native';
-import { X, Minus, Plus, Type, AlignLeft, AlignCenter, AlignJustify } from 'lucide-react-native';
+import { X, Minus, Plus, AlignLeft, AlignCenter, AlignJustify } from 'lucide-react-native';
 import { useTheme } from '../contexts/ThemeContext';
-import { GlassCard } from './ui/GlassCard';
+
 
 interface TextSettingsModalProps {
   visible: boolean;

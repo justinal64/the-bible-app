@@ -5,7 +5,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { ReadingPlanCard } from '../../components/ReadingPlanCard';
 import { DevotionalCard } from '../../components/DevotionalCard';
 import { ReadingPlan, Devotional } from '../../types/bible';
-import { Settings } from 'lucide-react-native';
+
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
 import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
@@ -13,7 +13,7 @@ import { ProfileButton } from '../../components/ProfileButton';
 import { GlassCard } from '../../components/ui/GlassCard';
 
 export default function PlansScreen() {
-  const { colors, fontSizes, theme } = useTheme();
+  const { colors, theme } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'plans' | 'devotionals'>('plans');
