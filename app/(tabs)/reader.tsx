@@ -11,7 +11,7 @@ import { Search, Type, ChevronDown, Copy, X, Share as ShareIcon } from 'lucide-r
 import { Button } from '../../components/ui/Button';
 import { ProfileButton } from '../../components/ProfileButton';
 import { useBibleVerses } from '../../hooks/useBibleVerses';
-import { useTextToSpeech } from '../../hooks/useTextToSpeech';
+import { useBibleSpeech } from '../../hooks/useBibleSpeech';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTheme } from '../../contexts/ThemeContext';
 import * as Clipboard from 'expo-clipboard';
@@ -28,7 +28,7 @@ export default function ReaderScreen() {
   const [selectedVerses, setSelectedVerses] = useState<Set<number>>(new Set());
 
   const { verses, loading } = useBibleVerses({ bookId, chapter, translationId });
-  const { isSpeaking, speak, stopSpeech } = useTextToSpeech();
+  const { isSpeaking, toggleSpeech } = useBibleSpeech(verses);
   const { colors, theme } = useTheme();
 
   const currentBook = BIBLE_BOOKS.find(b => b.id === bookId);
@@ -41,12 +41,6 @@ export default function ReaderScreen() {
     }
   }, [params.bookId, params.chapter]);
 
-  React.useEffect(() => {
-    return () => {
-      stopSpeech();
-    };
-  }, [bookId, chapter, stopSpeech]);
-
   // Clear selection when changing chapter/book
   React.useEffect(() => {
     setSelectedVerses(new Set());
@@ -56,13 +50,9 @@ export default function ReaderScreen() {
     setBookId(newBookId);
     setChapter(newChapter);
     setShowBookSelector(false);
-    stopSpeech();
   };
 
-  const toggleSpeech = async () => {
-    const textToRead = verses.map(v => v.text).join(' ');
-    await speak(textToRead);
-  };
+
 
   const handleNextChapter = () => {
     if (!currentBook) return;
