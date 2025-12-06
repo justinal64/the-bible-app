@@ -21,7 +21,6 @@ export default function ReaderScreen() {
     bookId,
     chapter,
     translationId,
-    setChapter,
     setReaderState
   } = useReader();
 
