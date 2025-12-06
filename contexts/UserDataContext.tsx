@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { useUserDataPersistence } from '../hooks/useUserDataPersistence';
 import { UserBookmark, UserNote } from '../types/bible';
 import { useAuth } from './AuthContext';
 
@@ -20,8 +21,7 @@ export function UserDataProvider({ children }: { children: ReactNode }) {
   const [bookmarks, setBookmarks] = useState<UserBookmark[]>([]);
   const [notes, setNotes] = useState<UserNote[]>([]);
 
-  // TODO: Load from Supabase or AsyncStorage
-  // For now, we start empty, but this state is now global.
+  useUserDataPersistence(bookmarks, notes, setBookmarks, setNotes);
 
   const addBookmark = (bookmark: UserBookmark) => {
     setBookmarks(prev => [...prev, bookmark]);
