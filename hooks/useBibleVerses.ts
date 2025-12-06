@@ -1,15 +1,13 @@
+
+
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { BibleVerse } from '../types/bible';
 import { BOOK_ID_TO_CODE } from '../utils/bibleMapping';
+import { useReader } from '../contexts/ReaderContext';
 
-interface UseBibleVersesProps {
-  bookId: number;
-  chapter: number;
-  translationId: string;
-}
-
-export function useBibleVerses({ bookId, chapter, translationId }: UseBibleVersesProps) {
+export function useBibleVerses() {
+  const { bookId, chapter, translationId } = useReader();
   const [verses, setVerses] = useState<BibleVerse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
