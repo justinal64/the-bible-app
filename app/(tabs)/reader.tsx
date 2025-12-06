@@ -5,10 +5,10 @@ import { GalaxyBackground } from '../../components/ui/GalaxyBackground';
 import { BibleReader } from '../../components/BibleReader';
 import { TextSettingsModal } from '../../components/TextSettingsModal';
 import { BIBLE_BOOKS } from '../../constants/bibleBooks';
-import { TRANSLATIONS } from '../../components/TranslationSelector'; // Should be removed if not used
+import { TRANSLATIONS } from '../../components/TranslationSelector';
 import { useBibleVerses } from '../../hooks/useBibleVerses';
 import { useBibleSpeech } from '../../hooks/useBibleSpeech';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 import { useReader } from '../../contexts/ReaderContext';
 import { ReaderHeader } from '../../components/ReaderHeader';
@@ -16,7 +16,6 @@ import { ReaderSelectionBar } from '../../components/ReaderSelectionBar';
 import { BookSelectorModal } from '../../components/BookSelectorModal';
 
 export default function ReaderScreen() {
-  const router = useRouter();
   const params = useLocalSearchParams();
   const {
     bookId,
