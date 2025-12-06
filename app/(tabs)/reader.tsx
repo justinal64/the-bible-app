@@ -16,13 +16,21 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTheme } from '../../contexts/ThemeContext';
 import * as Clipboard from 'expo-clipboard';
 import { GlassCard } from '../../components/ui/GlassCard';
+import { useReader } from '../../contexts/ReaderContext';
 
 export default function ReaderScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const [bookId, setBookId] = useState(params.bookId ? parseInt(params.bookId as string) : 1);
-  const [chapter, setChapter] = useState(params.chapter ? parseInt(params.chapter as string) : 1);
-  const [translationId, setTranslationId] = useState('de4e12af7f28f599-01');
+  const {
+    bookId,
+    chapter,
+    translationId,
+    setBookId,
+    setChapter,
+    setTranslationId,
+    setReaderState
+  } = useReader();
+
   const [showBookSelector, setShowBookSelector] = useState(false);
   const [showTextSettings, setShowTextSettings] = useState(false);
   const [selectedVerses, setSelectedVerses] = useState<Set<number>>(new Set());
@@ -36,10 +44,12 @@ export default function ReaderScreen() {
 
   React.useEffect(() => {
     if (params.bookId && params.chapter) {
-      setBookId(parseInt(params.bookId as string));
-      setChapter(parseInt(params.chapter as string));
+      setReaderState(
+        parseInt(params.bookId as string),
+        parseInt(params.chapter as string)
+      );
     }
-  }, [params.bookId, params.chapter]);
+  }, [params.bookId, params.chapter, setReaderState]);
 
   // Clear selection when changing chapter/book
   React.useEffect(() => {
@@ -47,8 +57,7 @@ export default function ReaderScreen() {
   }, [bookId, chapter]);
 
   const handleSelection = (newBookId: number, newChapter: number) => {
-    setBookId(newBookId);
-    setChapter(newChapter);
+    setReaderState(newBookId, newChapter);
     setShowBookSelector(false);
   };
 
@@ -60,8 +69,7 @@ export default function ReaderScreen() {
     if (chapter < currentBook.chapterCount) {
       setChapter(chapter + 1);
     } else if (bookId < 66) {
-      setBookId(bookId + 1);
-      setChapter(1);
+      setReaderState(bookId + 1, 1);
     }
   };
 
@@ -71,8 +79,7 @@ export default function ReaderScreen() {
     } else if (bookId > 1) {
       const prevBook = BIBLE_BOOKS.find(b => b.id === bookId - 1);
       if (prevBook) {
-        setBookId(bookId - 1);
-        setChapter(prevBook.chapterCount);
+        setReaderState(bookId - 1, prevBook.chapterCount);
       }
     }
   };
