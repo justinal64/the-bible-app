@@ -49,26 +49,7 @@ export default function ReaderScreen() {
     setSelectedVerses(new Set());
   }, [bookId, chapter]);
 
-  const handleNextChapter = () => {
-    if (!currentBook) return;
 
-    if (chapter < currentBook.chapterCount) {
-      setChapter(chapter + 1);
-    } else if (bookId < 66) {
-      setReaderState(bookId + 1, 1);
-    }
-  };
-
-  const handlePreviousChapter = () => {
-    if (chapter > 1) {
-      setChapter(chapter - 1);
-    } else if (bookId > 1) {
-      const prevBook = BIBLE_BOOKS.find(b => b.id === bookId - 1);
-      if (prevBook) {
-        setReaderState(bookId - 1, prevBook.chapterCount);
-      }
-    }
-  };
 
   const handleVersePress = (verseNumber: number) => {
     setSelectedVerses(prev => {
@@ -137,8 +118,6 @@ export default function ReaderScreen() {
           loading={loading}
           onVersePress={handleVersePress}
           highlightedVerses={selectedVerses}
-          onNextChapter={handleNextChapter}
-          onPreviousChapter={handlePreviousChapter}
           onToggleAudio={toggleSpeech}
           isSpeaking={isSpeaking}
           scrollToVerse={params.verse ? parseInt(params.verse as string) : undefined}

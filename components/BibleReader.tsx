@@ -4,14 +4,13 @@ import { FloatingNavigation } from './FloatingNavigation';
 import { useTheme } from '../contexts/ThemeContext';
 import { BibleVerse } from '../types/bible';
 import { useScrollToVerse } from '../hooks/useScrollToVerse';
+import { useReaderNavigation } from '../hooks/useReaderNavigation';
 
 interface BibleReaderProps {
   verses: BibleVerse[];
   loading: boolean;
   onVersePress?: (verse: number) => void;
   highlightedVerses?: Set<number>;
-  onNextChapter?: () => void;
-  onPreviousChapter?: () => void;
   onToggleAudio?: () => void;
   isSpeaking?: boolean;
 }
@@ -21,8 +20,6 @@ export function BibleReader({
   loading,
   onVersePress,
   highlightedVerses = new Set(),
-  onNextChapter,
-  onPreviousChapter,
   onToggleAudio,
   isSpeaking = false,
   scrollToVerse,
@@ -30,6 +27,7 @@ export function BibleReader({
   const { fontSizes, lineSpacingValue, verseNumbersVisible, colors, theme } = useTheme();
   const flatListRef = useRef<FlatList>(null);
   const [scrollProgress, setScrollProgress] = React.useState(0);
+  const { handleNextChapter, handlePreviousChapter } = useReaderNavigation();
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -145,8 +143,8 @@ export function BibleReader({
       </Animated.View>
 
       <FloatingNavigation
-        onPreviousChapter={onPreviousChapter}
-        onNextChapter={onNextChapter}
+        onPreviousChapter={handlePreviousChapter}
+        onNextChapter={handleNextChapter}
         onToggleAudio={onToggleAudio}
         isSpeaking={isSpeaking}
       />
