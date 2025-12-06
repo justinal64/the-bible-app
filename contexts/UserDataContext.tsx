@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { UserBookmark, UserNote } from '../types/bible';
 import { useAuth } from './AuthContext';
 
