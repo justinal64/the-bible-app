@@ -51,12 +51,7 @@ export default function TabLayout() {
           tabBarIcon: ({ size, color }) => <Settings size={size} color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="bookmarks"
-        options={{
-          href: null, // Hide from tab bar but keep accessible
-        }}
-      />
+
       <Tabs.Screen
         name="plans"
         options={{
