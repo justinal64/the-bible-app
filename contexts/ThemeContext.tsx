@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useColorScheme } from 'nativewind';
 import { UserPreferences } from '../types/bible';
 import { Colors, FontSizes, LineSpacing } from '../constants/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -37,7 +38,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       const stored = await AsyncStorage.getItem(STORAGE_KEY);
       if (stored) {
         const prefs: Partial<UserPreferences> = JSON.parse(stored);
-        if (prefs.theme) setTheme(prefs.theme);
+        if (prefs.theme) {
+          setTheme(prefs.theme);
+          setColorScheme(prefs.theme);
+        }
         if (prefs.fontSize) setFontSizeState(prefs.fontSize);
         if (prefs.lineSpacing) setLineSpacingState(prefs.lineSpacing);
         if (prefs.verseNumbersVisible !== undefined) setVerseNumbersVisible(prefs.verseNumbersVisible);
@@ -58,9 +62,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const { colorScheme, setColorScheme } = useColorScheme();
+
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
+    setColorScheme(newTheme);
     savePreferences({ theme: newTheme });
   };
 
