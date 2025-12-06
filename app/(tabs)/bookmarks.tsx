@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useUserData } from '../../contexts/UserDataContext';
 import { BookmarksList } from '../../components/BookmarksList';
 import { NotesList } from '../../components/NotesList';
 import { UserBookmark, UserNote } from '../../types/bible';
@@ -16,24 +17,39 @@ export default function BookmarksScreen() {
   const { colors, theme } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
+  const { bookmarks, notes, removeBookmark, removeNote } = useUserData();
   const [activeTab, setActiveTab] = useState<'bookmarks' | 'notes'>('bookmarks');
-  const [bookmarks] = useState<UserBookmark[]>([]);
-  const [notes] = useState<UserNote[]>([]);
 
   const handleBookmarkPress = (bookmark: UserBookmark) => {
-    console.log('Navigate to bookmark:', bookmark);
+    // Navigate to the bookmarked verse
+    router.push({
+      pathname: '/reader',
+      params: {
+        bookId: bookmark.bookId.toString(),
+        chapter: bookmark.chapter.toString(),
+        verse: bookmark.verse.toString()
+      }
+    });
   };
 
   const handleNotePress = (note: UserNote) => {
-    console.log('Open note:', note);
+    // Navigate to valid note location
+    router.push({
+      pathname: '/reader',
+      params: {
+        bookId: note.bookId.toString(),
+        chapter: note.chapter.toString(),
+        verse: note.verse?.toString()
+      }
+    });
   };
 
   const handleDeleteBookmark = (bookmarkId: string) => {
-    console.log('Delete bookmark:', bookmarkId);
+    removeBookmark(bookmarkId);
   };
 
   const handleDeleteNote = (noteId: string) => {
-    console.log('Delete note:', noteId);
+    removeNote(noteId);
   };
 
   if (!user) {
