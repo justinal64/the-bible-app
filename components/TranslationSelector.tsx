@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
+import { useReader } from '../contexts/ReaderContext';
 import { ChevronDown, Check } from 'lucide-react-native';
 
 interface Translation {
@@ -17,19 +18,19 @@ export const TRANSLATIONS: Translation[] = [
 ];
 
 interface TranslationSelectorProps {
-  selectedTranslationId: string;
-  onTranslationChange: (translationId: string) => void;
+  children?: React.ReactNode;
 }
 
-export function TranslationSelector({ selectedTranslationId, onTranslationChange, children }: TranslationSelectorProps & { children?: React.ReactNode }) {
+export function TranslationSelector({ children }: TranslationSelectorProps) {
   const { colors, theme } = useTheme();
+  const { translationId: selectedTranslationId, setTranslationId } = useReader();
   const [modalVisible, setModalVisible] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
 
   const selectedTranslation = TRANSLATIONS.find(t => t.id === selectedTranslationId) || TRANSLATIONS[0];
 
   const handleSelect = (translationId: string) => {
-    onTranslationChange(translationId);
+    setTranslationId(translationId);
     setModalVisible(false);
   };
 

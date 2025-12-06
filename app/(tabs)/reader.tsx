@@ -25,9 +25,7 @@ export default function ReaderScreen() {
     bookId,
     chapter,
     translationId,
-    setBookId,
     setChapter,
-    setTranslationId,
     setReaderState
   } = useReader();
 
@@ -35,7 +33,7 @@ export default function ReaderScreen() {
   const [showTextSettings, setShowTextSettings] = useState(false);
   const [selectedVerses, setSelectedVerses] = useState<Set<number>>(new Set());
 
-  const { verses, loading } = useBibleVerses({ bookId, chapter, translationId });
+  const { verses, loading } = useBibleVerses();
   const { isSpeaking, toggleSpeech } = useBibleSpeech(verses);
   const { colors, theme } = useTheme();
 
@@ -55,13 +53,6 @@ export default function ReaderScreen() {
   React.useEffect(() => {
     setSelectedVerses(new Set());
   }, [bookId, chapter]);
-
-  const handleSelection = (newBookId: number, newChapter: number) => {
-    setReaderState(newBookId, newChapter);
-    setShowBookSelector(false);
-  };
-
-
 
   const handleNextChapter = () => {
     if (!currentBook) return;
@@ -154,10 +145,7 @@ export default function ReaderScreen() {
           </TouchableOpacity>
 
           <View className="flex-row items-center gap-4">
-            <TranslationSelector
-              selectedTranslationId={translationId}
-              onTranslationChange={setTranslationId}
-            >
+            <TranslationSelector>
               <View className="flex-row items-center">
                 <Text className="font-semibold text-base" style={{ color: colors.text }}>
                   {selectedTranslation.abbreviation}
@@ -233,8 +221,7 @@ export default function ReaderScreen() {
                 <Button title="Close" onPress={() => setShowBookSelector(false)} variant="ghost" size="sm" />
               </View>
               <BookSelector
-                onSelect={handleSelection}
-                currentBookId={bookId}
+                onClose={() => setShowBookSelector(false)}
               />
             </SafeAreaView>
           </GalaxyBackground>

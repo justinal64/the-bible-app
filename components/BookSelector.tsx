@@ -4,16 +4,17 @@ import { BIBLE_BOOKS } from '../constants/bibleBooks';
 import { Button } from './ui/Button';
 import { ChevronLeft } from 'lucide-react-native';
 import { useTheme } from '../contexts/ThemeContext';
+import { useReader } from '../contexts/ReaderContext';
 
 interface BookSelectorProps {
-  onSelect: (bookId: number, chapter: number) => void;
-  currentBookId?: number;
+  onClose: () => void;
 }
 
-export function BookSelector({ onSelect, currentBookId }: BookSelectorProps) {
+export function BookSelector({ onClose }: BookSelectorProps) {
   const [selectedTestament, setSelectedTestament] = useState<'Old Testament' | 'New Testament'>('Old Testament');
   const [selectedBook, setSelectedBook] = useState<typeof BIBLE_BOOKS[0] | null>(null);
   const { colors, theme } = useTheme();
+  const { bookId: currentBookId, setReaderState } = useReader();
 
   const oldTestamentBooks = BIBLE_BOOKS.filter(b => b.testament === 'Old Testament');
   const newTestamentBooks = BIBLE_BOOKS.filter(b => b.testament === 'New Testament');
@@ -25,7 +26,8 @@ export function BookSelector({ onSelect, currentBookId }: BookSelectorProps) {
 
   const handleChapterPress = (chapter: number) => {
     if (selectedBook) {
-      onSelect(selectedBook.id, chapter);
+      setReaderState(selectedBook.id, chapter);
+      onClose();
     }
   };
 
