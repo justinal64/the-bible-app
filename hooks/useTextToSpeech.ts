@@ -44,7 +44,6 @@ export function useTextToSpeech() {
         }
 
         setVoice(bestVoice);
-        console.log('Selected voice:', bestVoice.name, bestVoice.identifier);
       }
     } catch (e) {
       console.log('Error loading voices:', e);
