@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { getUserStreak, startStreak, restartStreak } from '../lib/streak';
 
 export interface UserStreak {
   user_id: string;
@@ -22,37 +23,21 @@ export function useUserStreak() {
 
     setLoading(true);
     try {
-      // Fetch current streak
-      const { data, error } = await supabase
-        .from('user_streaks')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
+      const { data, error } = await getUserStreak(user.id);
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 is "No rows found"
+      if (error) {
         throw error;
       }
 
-      const today = new Date().toISOString().split('T')[0];
-
       if (!data) {
-        // No streak record exists, create one
-        const { data: newStreak, error: createError } = await supabase
-          .from('user_streaks')
-          .insert({
-            user_id: user.id,
-            current_streak: 1,
-            longest_streak: 1,
-            last_visit_date: today,
-          })
-          .select()
-          .single();
+        const { data: newStreak, error: createError } = await startStreak(user.id);
 
         if (createError) throw createError;
         setStreak(newStreak);
       } else {
         // Streak record exists, check dates
         const lastVisit = data.last_visit_date;
+        const today = new Date().toISOString().split('T')[0];
 
         if (lastVisit === today) {
           // Already visited today, just set state
@@ -71,17 +56,7 @@ export function useUserStreak() {
 
           const newLongestStreak = Math.max(newCurrentStreak, data.longest_streak);
 
-          const { data: updatedStreak, error: updateError } = await supabase
-            .from('user_streaks')
-            .update({
-              current_streak: newCurrentStreak,
-              longest_streak: newLongestStreak,
-              last_visit_date: today,
-              updated_at: new Date().toISOString(),
-            })
-            .eq('user_id', user.id)
-            .select()
-            .single();
+          const { data: updatedStreak, error: updateError } = await restartStreak(user.id, newCurrentStreak, newLongestStreak);
 
           if (updateError) throw updateError;
           setStreak(updatedStreak);
